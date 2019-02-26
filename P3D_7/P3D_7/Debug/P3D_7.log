@@ -1,0 +1,3 @@
+﻿  main.cpp
+d:\desktop - data drive\p3d\p3d_7\p3d_7\main.cpp(35): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+  P3D_7.vcxproj -> D:\Desktop - data drive\P3D\P3D_7\Debug\P3D_7.exe
