@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Do not ignore dependencies
+!dependencies/
+
 # User-specific files
 *.suo
 *.user
@@ -13,9 +16,11 @@
 *.userprefs
 
 # Build results
+[Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+x64/
 x86/
 bld/
 [Bb]in/
