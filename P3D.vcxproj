@@ -83,7 +83,7 @@
       <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(SolutionDir)\dependencies\freeglut\$(PlatformTarget)\bin\*.dll $(OutputPath) /Y</Command>
+      <Command>xcopy "$(SolutionDir)dependencies\freeglut\$(PlatformTarget)\bin\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,7 +99,7 @@
       <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(SolutionDir)\dependencies\freeglut\$(PlatformTarget)\bin\*.dll $(OutputPath) /Y</Command>
+      <Command>xcopy "$(SolutionDir)dependencies\freeglut\$(PlatformTarget)\bin\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +119,7 @@
       <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(SolutionDir)\dependencies\freeglut\$(PlatformTarget)\bin\*.dll $(OutputPath) /Y</Command>
+      <Command>xcopy "$(SolutionDir)dependencies\freeglut\$(PlatformTarget)\bin\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +139,7 @@
       <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(SolutionDir)\dependencies\freeglut\$(PlatformTarget)\bin\*.dll $(OutputPath) /Y</Command>
+      <Command>xcopy "$(SolutionDir)dependencies\freeglut\$(PlatformTarget)\bin\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
