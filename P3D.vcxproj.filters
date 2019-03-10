@@ -21,9 +21,15 @@
     <ClCompile Include="src\math\vec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\vec3.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ray.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
