@@ -24,13 +24,19 @@
     <ClCompile Include="src\ray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\math\vec3.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ray.hpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\vec3.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
