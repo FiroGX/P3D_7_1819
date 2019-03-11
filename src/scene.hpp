@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "scene_obj.hpp"
 #include "math/vec3.hpp"
+#include <fstream>
 
 namespace p3d {
 	class scene {
@@ -17,5 +18,6 @@ namespace p3d {
 		math::vec3 *b_color() const;
 		std::vector<light*> *lights() const;
 		std::vector<scene_obj*> *objs() const;
+		bool load_nff(std::string);
 	};
 }

@@ -2,11 +2,14 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <stdio.h>
-//#include "scene.h"
+#include <fstream>
+#include <string>
+#include "scene.hpp"
+//#include "ray.hpp"
 
 #define MAX_DEPTH 6
 
-//Scene* scene = NULL;
+p3d::scene* scene = NULL;
 int RES_X, RES_Y;
 
 void reshape(int w, int h) {
@@ -28,7 +31,7 @@ void drawScene() {
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 
-			//Ray ray = scene->GetCamera()->PrimaryRay(x, y);
+			//p3d::ray ray = scene->cam()->PrimaryRay(x, y);
 			//Color color = rayTracing(ray, 1, 1.0); //depth=1, ior=1.0
 			glBegin(GL_POINTS);
 			glColor3f(1.0f, 0.0f, 0.0f);
@@ -44,9 +47,9 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	//scene = new Scene();
-	//if (!(scene->load_nff("jap.nff")))
-	//	return 0;
+	scene = new p3d::scene();
+	if (!(scene->load_nff("jap.nff")))
+	return 0;
 
 	RES_X = 256; //scene->GetCamera()->GetResX();
 	RES_Y = 256; // scene->GetCamera()->GetResY();
