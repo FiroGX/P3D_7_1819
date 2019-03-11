@@ -143,15 +143,22 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\material.cpp" />
     <ClCompile Include="src\math\vec3.cpp" />
     <ClCompile Include="src\ray.cpp" />
+    <ClCompile Include="src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera.hpp" />
+    <ClInclude Include="src\light.hpp" />
     <ClInclude Include="src\material.hpp" />
     <ClInclude Include="src\math\vec3.hpp" />
     <ClInclude Include="src\ray.hpp" />
+    <ClInclude Include="src\scene.hpp" />
+    <ClInclude Include="src\scene_obj.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

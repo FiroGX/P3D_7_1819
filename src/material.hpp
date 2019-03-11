@@ -3,7 +3,7 @@
 
 namespace p3d {
 	class material {
-		math::vec3 _color;
+		math::vec3 *_color;
 		float _kd; // diffuse component
 		float _ks; // specular component
 		float _shine; // phong cosine power
@@ -14,6 +14,7 @@ namespace p3d {
 		material(float, float, float, float, float, float, float, float);
 		~material();
 
+		math::vec3 *color() const;
 		float kd() const;
 		float ks() const;
 		float shine() const;
