@@ -6,6 +6,11 @@
 #include <fstream>
 
 
+p3d::scene::~scene() {
+	for (auto l : *lights()) delete l;
+	for (auto o : *objs()) delete o;
+}
+
 p3d::camera *p3d::scene::cam() const {
 	return _cam;
 }

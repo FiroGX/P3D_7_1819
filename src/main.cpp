@@ -2,14 +2,17 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <stdio.h>
-#include <fstream>
-#include <string>
+
+#include "hit.hpp"
+#include "ray.hpp"
 #include "scene.hpp"
-//#include "ray.hpp"
+#include "math/vec3.hpp"
 
 #define MAX_DEPTH 6
 
-p3d::scene* scene = NULL;
+using namespace p3d;
+
+scene sce;
 int RES_X, RES_Y;
 
 void reshape(int w, int h) {
@@ -25,16 +28,41 @@ void reshape(int w, int h) {
 	glLoadIdentity();
 }
 
+hit *calculate_hit(ray &ray) {
+	return nullptr;
+}
+
+bool point_in_shadow() {
+	return false;
+}
+
+math::vec3 trace(ray &ray, int depth, float ref_index) {
+	hit *hit = calculate_hit(ray);
+	if (!hit->collided()) return *sce.b_color();
+	else {
+		math::vec3 color = *hit->mat()->color();
+		for (light* l : *sce.lights()) {
+			math::vec3 l_dir = math::normalize(*l->pos() - *hit->point());
+			if (math::dot(l_dir, *hit->normal()) > 0.0f)
+				if (!point_in_shadow())
+					color += math::vec3(0.0f, 0.0f, 0.0f);
+		}
+
+		if (depth >= MAX_DEPTH) return color;
+	}
+}
+
 // Draw function by primary ray casting from the eye towards the scene's objects
 void drawScene() {
 
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 
-			//p3d::ray ray = scene->cam()->PrimaryRay(x, y);
-			//Color color = rayTracing(ray, 1, 1.0); //depth=1, ior=1.0
+			ray ray;
+			//Ray ray = scene->GetCamera()->PrimaryRay(x, y);
+			math::vec3 color = trace(ray, 1, 1.0); //depth=1, ior=1.0
 			glBegin(GL_POINTS);
-			glColor3f(1.0f, 0.0f, 0.0f);
+			glColor3f(color.x(), color.y(), color.z());
 			glVertex2f(x, y);
 
 			glEnd();
@@ -47,9 +75,8 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	scene = new p3d::scene();
-	if (!(scene->load_nff("jap.nff")))
-	return 0;
+	if (!(sce.load_nff("jap.nff")))
+		return 0;
 
 	RES_X = 256; //scene->GetCamera()->GetResX();
 	RES_Y = 256; // scene->GetCamera()->GetResY();
