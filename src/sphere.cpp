@@ -1,32 +1,22 @@
 #include "sphere.hpp"
 
-public namespace p3d {
+p3d::sphere::sphere(math::vec3 * center, float radius) : scene_obj(nullptr) {
+	_center = center;
+	_radius = radius;
+}
 
-	sphere::sphere(math::vec3 * center, float radius) : scene_obj()
-	{
-		_center = center;
-		_radius = radius;
-		mat = nullptr;
-	}
+p3d::sphere::~sphere() {
+	//TODO
+}
 
-	sphere::~sphere()
-	{
-		//TODO
-	}
+math::vec3 * p3d::sphere::center() {
+	return _center;
+}
 
-	math::vec3 * sphere::center()
-	{
-		return _center;
-	}
+float p3d::sphere::radius() {
+	return _radius;
+}
 
-	float sphere::radius()
-	{
-		return _radius;
-	}
-
-	hit sphere::calculate_intersection(ray &ray)
-	{
-		return hit();
-	}
-
+p3d::hit p3d::sphere::calculate_intersection(p3d::ray &ray) {
+	return hit();
 }

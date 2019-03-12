@@ -39,6 +39,9 @@
     <ClCompile Include="src\hit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ray.hpp">
@@ -65,7 +68,7 @@
     <ClInclude Include="src\hit.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sphere.hpp">
+    <ClInclude Include="src\sphere.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
