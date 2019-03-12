@@ -6,24 +6,32 @@ namespace p3d {
 		math::vec3 *_eye;
 		math::vec3 *_at;
 		math::vec3 *_up;
-		float _hither;
-		float _fov;
-		float _width;
-		float _height;
+		math::vec3 *_xe;
+		math::vec3 *_ye;
+		math::vec3 *_ze;
+		float 		_hither;
+		float 		_fov;
+		float 		_width;
+		float 		_height;
+		int 			_resX;
+		int 			_resY;
 
 	public:
-		camera(float, float, float,
-			float, float, float,
-			float, float, float,
-			float, float, float, float);
+		camera(math::vec3*, math::vec3*, math::vec3*, float, float, int, int);
+
 		~camera();
 
 		math::vec3 *eye() const;
 		math::vec3 *at() const;
 		math::vec3 *up() const;
+		math::vec3 *xe() const;
+		math::vec3 *ye() const;
+		math::vec3 *ze() const;
 		float hither() const;
 		float fov() const;
 		float width() const;
 		float height() const;
+		int resX() const;
+		int resY() const;
 	};
 }
