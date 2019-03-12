@@ -3,6 +3,7 @@
 #include "light.hpp"
 #include "camera.hpp"
 #include "scene_obj.hpp"
+#include "sphere.hpp"
 #include "math/vec3.hpp"
 #include <fstream>
 

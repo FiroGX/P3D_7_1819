@@ -155,6 +155,7 @@
     <ClCompile Include="src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="sphere.hpp" />
     <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\hit.hpp" />
     <ClInclude Include="src\light.hpp" />

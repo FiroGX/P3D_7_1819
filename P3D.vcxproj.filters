@@ -65,6 +65,9 @@
     <ClInclude Include="src\hit.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sphere.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="jap.nff">
