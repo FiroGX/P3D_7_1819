@@ -51,6 +51,9 @@ bool p3d::scene::load_nff(std::string name){
 	if (myfile.is_open())
 	{
 		std::vector<std::string> arr;
+		material mat;
+		bool mat_flag = false;
+		
 		while (getline(myfile, line))
 		{
 			arr = split(line, " ");
@@ -115,7 +118,23 @@ bool p3d::scene::load_nff(std::string name){
 				*/
 			}
 			if (arr[0] == "f") { //object material properties
+				if (arr.size() == 9) {
 
+					math::vec3 aux =  math::vec3(
+						strtof((arr[1]).c_str(), 0),
+						strtof((arr[2]).c_str(), 0),
+						strtof((arr[3]).c_str(), 0));
+					mat = material( aux,
+						strtof((arr[4]).c_str(), 0),
+						strtof((arr[5]).c_str(), 0),
+						strtof((arr[6]).c_str(), 0),
+						strtof((arr[7]).c_str(), 0),
+						strtof((arr[8]).c_str(), 0));
+					mat_flag = true;
+				}
+				else {
+					printf("material doesnt have the right amount of atributes");
+				}
 			}
 			if (arr[0] == "c") { //cone or cylinder primitive
 
@@ -152,7 +171,7 @@ bool p3d::scene::load_nff(std::string name){
 		cout << "Unable to open file";
 		return false;
 	}
-	return false; //TODO change this to true
+	return true; //TODO change this to true
 }
 
 
