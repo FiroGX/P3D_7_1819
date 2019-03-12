@@ -8,6 +8,7 @@ namespace p3d {
 		math::vec3 *_normal;
 		material *_mat;
 		bool _collided;
+		float _distance;
 
 	public:
 		hit(math::vec3 *, math::vec3 *, material *, bool);
@@ -18,5 +19,6 @@ namespace p3d {
 		math::vec3 *normal() const;
 		material *mat() const;
 		bool collided() const;
+		float distance() const;
 	};
 }

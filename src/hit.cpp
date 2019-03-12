@@ -26,3 +26,7 @@ p3d::material *p3d::hit::mat() const {
 bool p3d::hit::collided() const {
 	return _collided;
 }
+
+float p3d::hit::distance() const {
+	return _distance;
+}

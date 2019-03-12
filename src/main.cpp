@@ -28,27 +28,39 @@ void reshape(int w, int h) {
 	glLoadIdentity();
 }
 
-hit *calculate_hit(ray &ray) {
-	return nullptr;
+hit calculate_hit(ray &ray) {
+	hit closest;
+	for (auto obj : *sce.objs()) {
+		hit hit = obj->calculate_intersection(ray);
+		if (hit.distance() < closest.distance())
+			closest = hit;
+	}
+	return closest;
 }
 
-bool point_in_shadow() {
-	return false;
+bool point_in_shadow(math::vec3 &hit_pos, math::vec3 &l_dir) {
+	ray ray(hit_pos, l_dir);
+	hit shadow_feeler = calculate_hit(ray);
+	return shadow_feeler.collided();
 }
 
 math::vec3 trace(ray &ray, int depth, float ref_index) {
-	hit *hit = calculate_hit(ray);
-	if (!hit->collided()) return *sce.b_color();
+	hit hit = calculate_hit(ray);
+	if (!hit.collided()) return *sce.b_color();
 	else {
-		math::vec3 color = *hit->mat()->color();
+		math::vec3 color = *hit.mat()->color();
 		for (light* l : *sce.lights()) {
-			math::vec3 l_dir = math::normalize(*l->pos() - *hit->point());
-			if (math::dot(l_dir, *hit->normal()) > 0.0f)
-				if (!point_in_shadow())
-					color += math::vec3(0.0f, 0.0f, 0.0f);
+			math::vec3 l_dir = math::normalize(*l->pos() - *hit.point());
+			if (math::dot(l_dir, *hit.normal()) > 0.0f)
+				if (!point_in_shadow(*hit.point(), l_dir))
+					color += *l->color() * hit.mat()->kd * math::dot(*hit.normal(), l_dir);
 		}
 
 		if (depth >= MAX_DEPTH) return color;
+
+		// TODO: add refraction and reflection recursion
+
+		return color;
 	}
 }
 
