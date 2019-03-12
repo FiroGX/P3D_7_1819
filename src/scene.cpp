@@ -129,7 +129,7 @@ bool p3d::scene::load_nff(std::string name){
 
 				float rad = strtof((arr[4]).c_str(), 0);
 
-				sphere * sphe = new sphere(&pos, rad);
+				sphere * sphe = new sphere(pos, rad, material());
 
 				_objs->push_back(sphe);
 			
