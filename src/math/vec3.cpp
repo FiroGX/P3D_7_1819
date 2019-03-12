@@ -2,7 +2,7 @@
 #include <cmath>
 
 math::vec3::vec3() {
-	_x, _y, _z = 0.0;
+	_x, _y, _z = 0.0f;
 }
 
 math::vec3::vec3(float x, float y, float z) {
@@ -47,6 +47,10 @@ math::vec3 &math::vec3::operator+=(const vec3 &v) {
 	_y += v.y();
 	_z += v.z();
 	return *this;
+}
+
+math::vec3 math::vec3::operator*(const vec3 &v) {
+	return vec3(_x*v.x(), _y*v.y(), _z*v.z());
 }
 
 math::vec3 math::vec3::operator*(float s) const {

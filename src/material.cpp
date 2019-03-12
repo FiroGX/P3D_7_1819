@@ -1,12 +1,14 @@
 #include "material.hpp"
 
-p3d::material::material(float r, float g, float b, float kd, float ks, float shine, float t, float i) {
-	_color = new math::vec3(r, g, b); _kd = kd; _ks = ks; _shine = shine; _t = t; _ref_index = i;
+p3d::material::material(math::vec3 color, float kd, float ks, float shine, float t, float i) {
+	_color = color; _kd = kd; _ks = ks; _shine = shine; _t = t; _ref_index = i;
 }
+
+p3d::material::material() {}
 
 p3d::material::~material() {}
 
-math::vec3 *p3d::material::color() const {
+math::vec3 p3d::material::color() const {
 	return _color;
 }
 

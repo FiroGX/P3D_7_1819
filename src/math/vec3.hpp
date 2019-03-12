@@ -25,6 +25,9 @@ namespace math {
 		vec3 operator+(const vec3 &) const;
 		vec3 &operator+=(const vec3 &);
 
+		// Vector multiplication
+		vec3 operator*(const vec3&);
+
 		// Scalar multiplication
 		vec3 operator*(float) const;
 		vec3 &operator*=(float);

@@ -38,7 +38,7 @@ hit calculate_hit(ray &ray) {
 	return closest;
 }
 
-bool point_in_shadow(math::vec3 &hit_pos, math::vec3 &l_dir) {
+bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 	ray ray(hit_pos, l_dir);
 	hit shadow_feeler = calculate_hit(ray);
 	return shadow_feeler.collided();
@@ -48,18 +48,14 @@ math::vec3 trace(ray &ray, int depth, float ref_index) {
 	hit hit = calculate_hit(ray);
 	if (!hit.collided()) return *sce.b_color();
 	else {
-      math::vec3 color(0.0f,0.0f,0.0f);
+		math::vec3 color(0.0f, 0.0f, 0.0f);
 		for (light* l : *sce.lights()) {
-			math::vec3 l_dir = math::normalize(*l->pos() - *hit.point());
-            float lambert = math::dot(l_dir, *hit.normal());
+			math::vec3 l_dir = math::normalize(l->pos() - hit.point());
+			float lambert = math::dot(l_dir, hit.normal());
 			if (lambert > 0.0f)
-              if (!point_in_shadow(*hit.point(), l_dir)) {
-                float r = lambert * hit.mat()->kd() * hit.mat()->color()->x() * l->color()->x();
-                float g = lambert * hit.mat()->kd() * hit.mat()->color()->y() * l->color()->y();
-                float b = lambert * hit.mat()->kd() * hit.mat()->color()->z() * l->color()->z();
-
-                color += math::vec3(r,g,b);
-              }
+				if (!point_in_shadow(hit.point(), l_dir)) {
+					color += lambert * hit.mat().kd() * hit.mat().color() * l->color();
+				}
 		}
 
 		if (depth >= MAX_DEPTH) return color;
