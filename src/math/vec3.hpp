@@ -39,14 +39,24 @@ namespace math {
 	};
 
 	// Reversed scalar multiplication
-	inline vec3 operator*(float, const vec3 &);
+	inline vec3 operator*(float s, const vec3 &v) {
+		return v * s;
+	}
 
 	// Dot product
-	inline float dot(const vec3 &, const vec3 &);
+	inline float dot(const vec3 &v1, const vec3 &v2) {
+		return v1.x()*v2.x() + v1.y()*v2.y() + v1.z()*v2.z();
+	}
 
 	// Cross product
-	inline vec3 cross(const vec3 &, const vec3 &);
+	inline vec3 cross(const vec3 &v1, const vec3 &v2) {
+		return vec3((v1.y() * v2.z()) - (v1.z() * v2.y()),
+			(v1.z() * v2.x()) - (v1.x() * v2.z()),
+			(v1.x() * v2.y()) - (v1.y() * v2.x()));
+	}
 
 	// Normalization
-	inline vec3 normalize(const vec3 &);
+	inline vec3 normalize(const vec3 &v) {
+		return v / v.magnitude();
+	}
 }

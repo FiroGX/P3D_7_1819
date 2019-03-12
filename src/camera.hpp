@@ -6,8 +6,7 @@ namespace p3d {
 		math::vec3 *_eye;
 		math::vec3 *_at;
 		math::vec3 *_up;
-		float _near;
-		float _far;
+		float _hither;
 		float _fov;
 		float _width;
 		float _height;
@@ -16,14 +15,13 @@ namespace p3d {
 		camera(float, float, float,
 			float, float, float,
 			float, float, float,
-			float, float, float, float, float);
+			float, float, float, float);
 		~camera();
 
 		math::vec3 *eye() const;
 		math::vec3 *at() const;
 		math::vec3 *up() const;
-		float near() const;
-		float far() const;
+		float hither() const;
 		float fov() const;
 		float width() const;
 		float height() const;

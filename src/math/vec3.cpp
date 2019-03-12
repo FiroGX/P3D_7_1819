@@ -78,21 +78,3 @@ float math::vec3::magnitude_sqrd() const {
 float math::vec3::magnitude() const {
 	return std::sqrt(magnitude_sqrd());
 }
-
-inline math::vec3 math::operator*(float s, const vec3 &v) {
-	return v * s;
-}
-
-inline float math::dot(const vec3 &v1, const vec3 &v2) {
-	return v1.x()*v2.x() + v1.y()*v2.y() + v1.z()*v2.z();
-}
-
-inline math::vec3 math::cross(const vec3 &v1, const vec3 &v2) {
-	return vec3((v1.y() * v2.z()) - (v1.z() * v2.y()),
-		(v1.z() * v2.x()) - (v1.x() * v2.z()),
-		(v1.x() * v2.y()) - (v1.y() * v2.x()));
-}
-
-math::vec3 math::normalize(const vec3 &v) {
-	return v / v.magnitude();
-}
