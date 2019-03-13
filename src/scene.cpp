@@ -110,9 +110,9 @@ bool p3d::scene::load_nff(const std::string name) {
 					std::atof(arr[2].c_str()),
 					std::atof(arr[3].c_str()));
 				// color
-				math::vec3 col = math::vec3(std::atof(arr[1].c_str()),
-					std::atof(arr[2].c_str()),
-					std::atof(arr[3].c_str()));
+				math::vec3 col = math::vec3(std::atof(arr[4].c_str()),
+					std::atof(arr[5].c_str()),
+					std::atof(arr[6].c_str()));
 
 				std::cout << "adding light to lights vector" << std::endl;
 				light *l = new p3d::light(pos, col);
