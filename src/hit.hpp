@@ -11,7 +11,7 @@ namespace p3d {
 		float _distance;
 
 	public:
-		hit(math::vec3, math::vec3, material, bool);
+		hit(math::vec3, math::vec3, material, float, bool);
 		hit();
 		~hit();
 
@@ -20,5 +20,7 @@ namespace p3d {
 		material mat() const;
 		bool collided() const;
 		float distance() const;
+
+		void distance(float);
 	};
 }

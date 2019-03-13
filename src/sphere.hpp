@@ -17,7 +17,7 @@ namespace p3d {
 		~sphere();
 		math::vec3 center();
 		float radius();
-		virtual hit calculate_intersection(ray &);
+		virtual hit calculate_intersection(const ray &) const;
 	};
 }
 

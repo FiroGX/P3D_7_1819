@@ -1,7 +1,7 @@
 #include "hit.hpp"
 
-p3d::hit::hit(math::vec3 point, math::vec3 normal, material mat, bool collided) {
-	_point = point; _normal = normal; _mat = mat; _collided = collided;
+p3d::hit::hit(math::vec3 point, math::vec3 normal, material mat, float distance, bool collided) {
+	_point = point; _normal = normal; _mat = mat; _distance = distance; _collided = collided;
 }
 
 p3d::hit::hit() {
@@ -28,4 +28,8 @@ bool p3d::hit::collided() const {
 
 float p3d::hit::distance() const {
 	return _distance;
+}
+
+void p3d::hit::distance(float distance) {
+	_distance = distance;
 }

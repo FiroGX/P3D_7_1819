@@ -29,11 +29,11 @@ void reshape(int w, int h) {
 	glLoadIdentity();
 }
 
-hit calculate_hit(ray &ray) {
+hit calculate_hit(const ray &ray) {
 	hit closest;
 	for (auto obj : sce.objs()) {
 		hit hit = obj->calculate_intersection(ray);
-		if (hit.distance() < closest.distance())
+		if (hit.collided() && hit.distance() < closest.distance())
 			closest = hit;
 	}
 	return closest;
@@ -45,7 +45,7 @@ bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 	return shadow_feeler.collided();
 }
 
-math::vec3 trace(ray &ray, int depth, float ref_index) {
+math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	hit hit = calculate_hit(ray);
 	if (!hit.collided()) return sce.b_color();
 	else {
