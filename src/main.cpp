@@ -31,7 +31,7 @@ void reshape(int w, int h) {
 
 hit calculate_hit(ray &ray) {
 	hit closest;
-	for (auto obj : *sce.objs()) {
+	for (auto obj : sce.objs()) {
 		hit hit = obj->calculate_intersection(ray);
 		if (hit.distance() < closest.distance())
 			closest = hit;
@@ -47,10 +47,10 @@ bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 
 math::vec3 trace(ray &ray, int depth, float ref_index) {
 	hit hit = calculate_hit(ray);
-	if (!hit.collided()) return *sce.b_color();
+	if (!hit.collided()) return sce.b_color();
 	else {
 		math::vec3 color(0.0f, 0.0f, 0.0f);
-		for (light* l : *sce.lights()) {
+		for (light* l : sce.lights()) {
 			math::vec3 l_dir = math::normalize(l->pos() - hit.point());
 			float lambert = math::dot(l_dir, hit.normal());
 			if (lambert > 0.0f)
@@ -75,7 +75,7 @@ void drawScene() {
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 
-			ray ray = sce.cam()->primaryRay(x, y);
+			ray ray = sce.cam().primaryRay(x, y);
 			math::vec3 color = trace(ray, 1, 1.0); //depth=1, ior=1.0
 			glBegin(GL_POINTS);
 			glColor3f(color.x(), color.y(), color.z());
@@ -95,8 +95,8 @@ int main(int argc, char**argv) {
 		return 0;
 
 	
-	RES_X = sce.cam()->resX();
-	RES_Y = sce.cam()->resY();
+	RES_X = sce.cam().resX();
+	RES_Y = sce.cam().resY();
 	printf("resx = %d  resy= %d.\n", RES_X, RES_Y);
 
 	glutInit(&argc, argv);

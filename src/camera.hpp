@@ -20,7 +20,7 @@ namespace p3d {
 
 	public:
 		camera(math::vec3, math::vec3, math::vec3, float, float, int, int);
-
+		camera();
 		~camera();
 
 		ray primaryRay(int, int);

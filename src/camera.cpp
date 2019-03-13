@@ -15,6 +15,8 @@ p3d::camera::camera(math::vec3 eye, math::vec3 at, math::vec3 up, float hither, 
 	_width = (_resX / _resY) * _height;				 //based on resolution and fovy
 }
 
+p3d::camera::camera() {}
+
 p3d::camera::~camera() {}
 
 p3d::ray p3d::camera::primaryRay(int x, int y) {
