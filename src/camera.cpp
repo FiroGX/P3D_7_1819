@@ -20,13 +20,11 @@ p3d::camera::camera() {}
 p3d::camera::~camera() {}
 
 p3d::ray p3d::camera::primaryRay(int x, int y) {
-	float pixel_x = _width * (x / _resX - 0.5);		//x component on the pixel
-	float pixel_y = _height * (y / _resY - 0.5);	//y component on the pixel
+	float pixel_x = _width / _resX * ( x - _resX / 2.0f + 0.5);		//x component on the pixel
+	float pixel_y = _height / _resY * ( y - _resY / 2.0f + 0.5);	//y component on the pixel
 
-	ray ray;
-	ray.o(_eye);									//origin of the ray is the eye
-	ray.d(math::normalize(-_df * _ze + pixel_x * _xe + pixel_y * _ye)); //formula
-	return ray;
+	math::vec3 dir(-_df * _ze + pixel_x * _xe + pixel_y * _ye);
+	return ray(_eye,dir);
 }
 
 math::vec3 p3d::camera::eye() const {
