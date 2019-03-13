@@ -1,4 +1,3 @@
-
 #pragma once
 #include "scene_obj.hpp"
 #include "material.hpp"
@@ -20,5 +19,3 @@ namespace p3d {
 		virtual hit calculate_intersection(const ray &) const;
 	};
 }
-
-

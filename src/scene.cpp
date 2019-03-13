@@ -1,6 +1,7 @@
 #include "scene.hpp"
 
 #include "sphere.hpp"
+#include "plane.hpp"
 
 #include <iostream>
 #include <iterator>
@@ -153,8 +154,21 @@ bool p3d::scene::load_nff(const std::string name) {
 			} else if (arr[0] == "pp" && mat_flag) { //polygonal patch primitive
 				std::cout << "not implemented" << std::endl;
 			} else if (arr[0] == "pl" && mat_flag) { //plane
-				std::cout << "plane not implemented" << std::endl;
-				//requires 3 different non colinear points
+				std::cout << "creating plane" << std::endl;
+				math::vec3 a(std::atof(arr[1].c_str()),
+					std::atof(arr[2].c_str()),
+					std::atof(arr[3].c_str()));
+				math::vec3 b(std::atof(arr[4].c_str()),
+					std::atof(arr[5].c_str()),
+					std::atof(arr[6].c_str()));
+				math::vec3 c(std::atof(arr[7].c_str()),
+					std::atof(arr[8].c_str()),
+					std::atof(arr[9].c_str()));
+
+				plane *pl = new plane(a, b, c, mat);
+
+				std::cout << "adding plane to scene objects" << std::endl;
+				_objs.push_back(pl);
 			}
 
 			//closes the viewing vectors and angles section and creates the camera
