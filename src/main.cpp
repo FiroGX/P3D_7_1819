@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <stdio.h>
+#include <cmath>
 
 #include "hit.hpp"
 #include "ray.hpp"
@@ -54,7 +55,9 @@ math::vec3 trace(ray &ray, int depth, float ref_index) {
 			float lambert = math::dot(l_dir, hit.normal());
 			if (lambert > 0.0f)
 				if (!point_in_shadow(hit.point(), l_dir)) {
-					color += lambert * hit.mat().kd() * hit.mat().color() * l->color();
+					color += hit.mat().color() * l->color() * lambert * hit.mat().kd();
+					math::vec3 half_vec = math::normalize(-ray.d() + l_dir);
+					color += l->color() * hit.mat().ks() * std::pow(math::dot(hit.normal(), half_vec), hit.mat().shine());
 				}
 		}
 
