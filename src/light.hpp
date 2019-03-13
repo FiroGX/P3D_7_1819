@@ -8,7 +8,7 @@ namespace p3d {
 
 	public:
 		light(math::vec3, math::vec3);
-		light();
+		//light();
 		~light();
 
 		math::vec3 pos() const;

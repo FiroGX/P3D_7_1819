@@ -72,8 +72,7 @@ void drawScene() {
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 
-			ray ray;
-			//Ray ray = scene->GetCamera()->PrimaryRay(x, y);
+			ray ray = sce.cam()->primaryRay(x, y);
 			math::vec3 color = trace(ray, 1, 1.0); //depth=1, ior=1.0
 			glBegin(GL_POINTS);
 			glColor3f(color.x(), color.y(), color.z());
@@ -92,8 +91,9 @@ int main(int argc, char**argv) {
 	if (!(sce.load_nff("jap.nff")))
 		return 0;
 
-	RES_X = 256; //scene->GetCamera()->GetResX();
-	RES_Y = 256; // scene->GetCamera()->GetResY();
+	
+	RES_X = sce.cam()->resX();
+	RES_Y = sce.cam()->resY();
 	printf("resx = %d  resy= %d.\n", RES_X, RES_Y);
 
 	glutInit(&argc, argv);

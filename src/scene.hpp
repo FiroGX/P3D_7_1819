@@ -15,7 +15,11 @@ namespace p3d {
 		std::vector<scene_obj*> *_objs;
 
 	public:
-		scene() = default;
+		scene() {
+					_objs = new std::vector<p3d::scene_obj*>;
+					_lights = new std::vector<light*>;
+					_b_color = new math::vec3(0.0f,0.0f,0.0f);
+		};
 		~scene();
 
 		camera *cam() const;

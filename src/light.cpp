@@ -5,7 +5,7 @@ p3d::light::light(math::vec3 pos, math::vec3 color) {
 	_color = color;
 }
 
-p3d::light::light() {}
+//p3d::light::light() {}
 
 p3d::light::~light() {}
 
