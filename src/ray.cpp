@@ -4,7 +4,7 @@ p3d::ray::ray() {}
 
 p3d::ray::ray(math::vec3 o, math::vec3 d) {
 	_o = o;
-	_d = d;
+	_d = math::normalize(d);
 }
 
 p3d::ray::~ray() {}
