@@ -7,9 +7,7 @@ p3d::sphere::sphere(math::vec3 center, float radius, material mat) : scene_obj(m
 	_radius = radius;
 }
 
-p3d::sphere::~sphere() {
-	//TODO
-}
+p3d::sphere::~sphere() {}
 
 math::vec3 p3d::sphere::center() {
 	return _center;
@@ -21,29 +19,23 @@ float p3d::sphere::radius() {
 
 p3d::hit p3d::sphere::calculate_intersection(const p3d::ray &ray) const {
 	math::vec3 oc = _center - ray.o();
-	float td_min = math::dot(oc, ray.d());
-	if (td_min < 0.0f) return hit();
+	float b = math::dot(oc, ray.d());
+	float c = math::dot(oc, oc) - _radius * _radius;
+	if (c > 0.0f && b < 0.0f) return hit();
 	else {
-		float a = math::dot(ray.d(), ray.d());
-		float b = math::dot(-oc,ray.d()) * 2.0f;
-		float c = math::dot(-oc, -oc) - _radius * _radius;
+		float root = b * b - c;
+		if (root < 0.0f) return hit();
 
-		float disc = b * b - 4.0f * a * c;
-		if (disc < 0.0f) return hit();
+		float e = std::sqrt(root);
 
-		float e = std::sqrt(disc);
+		float t;
+		if (c > 0)
+			t = b - std::sqrt(root);
+		else
+			t = b + std::sqrt(root);
 
-		float t = (-b - e) / (2.0f * a);  // smaller root
-
-		if (t > KEPSILON) {
-			return hit(ray.o() + ray.d() * t, (-oc + ray.d() * t) / _radius, _mat, t, true);
-		}
-
-		t = (-b + e) / (2.0f * a);  // larger root
-
-		if (t > KEPSILON) {
-			return hit(ray.o() + ray.d() * t, (-oc + ray.d() * t) / _radius, _mat, t, true);
-		}
+		if (t > KEPSILON)
+			return hit(ray.o() + ray.d()*t, (-oc + ray.d() * t) / _radius, _mat, t, true);
 
 		return hit();
 	}
