@@ -67,6 +67,6 @@ namespace math {
 
 	// Degrees to Radians conversion
 	inline float radian(const float degrees) {
-		return degrees = degrees * M_PI / 180;
+		return degrees * M_PI / 180;
 	}
 }
