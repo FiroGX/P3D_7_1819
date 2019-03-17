@@ -49,7 +49,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	hit hit = calculate_hit(ray);
 	if (!hit.collided()) return sce.b_color();
 	else {
-		math::vec3 color(0.0f, 0.0f, 0.0f);
+ 		math::vec3 color(0.0f, 0.0f, 0.0f);
 		for (light* l : sce.lights()) {
 			math::vec3 l_dir = math::normalize(l->pos() - hit.point());
 			float lambert = math::dot(l_dir, hit.normal());
@@ -63,7 +63,12 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 
 		if (depth >= MAX_DEPTH) return color;
 
-		// TODO: add refraction and reflection recursion
+        if (hit.mat().ks() > 0) {
+            math::vec3 dir = ray.d() - hit.normal() * math::dot(ray.d(),hit.normal()) * 2.0f;
+            p3d::ray ref_ray = p3d::ray(hit.point(), dir);
+            math::vec3 ref_color = trace(ref_ray, depth + 1, ref_index);
+            color += ref_color * hit.mat().ks();
+        }
 
 		return color;
 	}

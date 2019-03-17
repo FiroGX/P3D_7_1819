@@ -152,26 +152,18 @@ bool p3d::scene::load_nff(const std::string name) {
 				_objs.push_back(sphe);
 			} else if (arr[0] == "p" && mat_flag) { //polygon primitive
                 int vert = std::atoi(arr[1].c_str());
+                std::vector<math::vec3> vertices;
+                for (int i = vert; i > 0; i--) {
+                    std::getline(myfile, line);
+                    arr = split(line, " ");
+                    math::vec3 v(std::atof(arr[0].c_str()),
+                        std::atof(arr[1].c_str()),
+                        std::atof(arr[2].c_str()));
+                    vertices.push_back(v);
+                }
                 if (vert == 3) {
-                    std::getline(myfile, line);
-                    arr = split(line, " ");
-                    math::vec3 a(std::atof(arr[0].c_str()),
-                        std::atof(arr[1].c_str()),
-                        std::atof(arr[2].c_str()));
-
-                    std::getline(myfile, line);
-                    arr = split(line, " ");
-                    math::vec3 b(std::atof(arr[0].c_str()),
-                        std::atof(arr[1].c_str()),
-                        std::atof(arr[2].c_str()));
-
-                    std::getline(myfile, line);
-                    arr = split(line, " ");
-                    math::vec3 c(std::atof(arr[0].c_str()),
-                        std::atof(arr[1].c_str()),
-                        std::atof(arr[2].c_str()));
-
-                    triangle *tri = new triangle(a, b, c, mat);
+                    triangle *tri = new triangle(vertices[0],
+                        vertices[1], vertices[2], mat);
                     _objs.push_back(tri);
                 } else
                     std::cout << "not implemented" << std::endl;

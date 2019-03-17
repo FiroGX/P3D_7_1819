@@ -9,7 +9,7 @@ p3d::sphere::sphere(math::vec3 center, float radius, material mat) : scene_obj(m
 
 p3d::sphere::~sphere() {}
 
-math::vec3 p3d::sphere::center() {
+const math::vec3 &p3d::sphere::center() {
 	return _center;
 }
 

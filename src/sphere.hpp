@@ -13,7 +13,7 @@ namespace p3d {
 	public:
 		sphere(math::vec3, float, material);
 		~sphere();
-		math::vec3 center();
+		const math::vec3 &center();
 		float radius();
 		virtual hit calculate_intersection(const ray &) const;
 	};
