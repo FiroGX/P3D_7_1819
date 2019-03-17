@@ -1,6 +1,5 @@
 #pragma once
 
-#include "math/vec3.hpp"
 #include "scene_obj.hpp"
 
 namespace p3d {

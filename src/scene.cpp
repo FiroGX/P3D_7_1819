@@ -1,7 +1,8 @@
 #include "scene.hpp"
 
-#include "sphere.hpp"
 #include "plane.hpp"
+#include "sphere.hpp"
+#include "triangle.hpp"
 
 #include <iostream>
 #include <iterator>
@@ -150,7 +151,30 @@ bool p3d::scene::load_nff(const std::string name) {
 				std::cout << "adding sphere to scene objects" << std::endl;
 				_objs.push_back(sphe);
 			} else if (arr[0] == "p" && mat_flag) { //polygon primitive
-				std::cout << "not implemented" << std::endl;
+                int vert = std::atoi(arr[1].c_str());
+                if (vert == 3) {
+                    std::getline(myfile, line);
+                    arr = split(line, " ");
+                    math::vec3 a(std::atof(arr[0].c_str()),
+                        std::atof(arr[1].c_str()),
+                        std::atof(arr[2].c_str()));
+
+                    std::getline(myfile, line);
+                    arr = split(line, " ");
+                    math::vec3 b(std::atof(arr[0].c_str()),
+                        std::atof(arr[1].c_str()),
+                        std::atof(arr[2].c_str()));
+
+                    std::getline(myfile, line);
+                    arr = split(line, " ");
+                    math::vec3 c(std::atof(arr[0].c_str()),
+                        std::atof(arr[1].c_str()),
+                        std::atof(arr[2].c_str()));
+
+                    triangle *tri = new triangle(a, b, c, mat);
+                    _objs.push_back(tri);
+                } else
+                    std::cout << "not implemented" << std::endl;
 			} else if (arr[0] == "pp" && mat_flag) { //polygonal patch primitive
 				std::cout << "not implemented" << std::endl;
 			} else if (arr[0] == "pl" && mat_flag) { //plane

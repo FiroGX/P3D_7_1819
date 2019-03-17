@@ -1,9 +1,8 @@
 #pragma once
+
 #include "scene_obj.hpp"
-#include "material.hpp"
 #include "hit.hpp"
 #include "ray.hpp"
-#include "math/vec3.hpp"
 
 namespace p3d {
 	class sphere : public scene_obj{
