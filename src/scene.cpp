@@ -162,6 +162,7 @@ bool p3d::scene::load_nff(const std::string name) {
                     vertices.push_back(v);
                 }
                 if (vert == 3) {
+                    std::cout << "creating triangle" << std::endl;
                     triangle *tri = new triangle(vertices[0],
                         vertices[1], vertices[2], mat);
                     _objs.push_back(tri);

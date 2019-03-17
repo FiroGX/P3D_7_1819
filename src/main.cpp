@@ -65,9 +65,33 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 
         if (hit.mat().ks() > 0) {
             math::vec3 dir = ray.d() - hit.normal() * math::dot(ray.d(),hit.normal()) * 2.0f;
-            p3d::ray ref_ray = p3d::ray(hit.point(), dir);
-            math::vec3 ref_color = trace(ref_ray, depth + 1, ref_index);
-            color += ref_color * hit.mat().ks();
+            p3d::ray refl_ray = p3d::ray(hit.point(), dir);
+            math::vec3 refl_color = trace(refl_ray, depth + 1, ref_index);
+            color += refl_color * hit.mat().ks();
+        }
+
+        if (hit.mat().t() > 0) {
+            math::vec3 normal = hit.normal();
+            float cosi = math::dot(ray.d(), normal);
+            float ior;
+            if (cosi < 0) // Outside of surface
+                ior = ref_index / hit.mat().ref_index();
+            else {  // inside of surface
+                ior = hit.mat().ref_index() / ref_index;
+                normal = -normal;
+            }
+
+            math::vec3 vt = normal * math::dot(-ray.d(), normal) + ray.d();
+            float sini = vt.magnitude();
+            float sint = sini * ior;
+
+            if (sint <= 1) {
+                float cost = std::sqrt(1 - sint);
+                math::vec3 dir = math::normalize(vt) * sint - normal * cost;
+                p3d::ray refr_ray = p3d::ray(hit.point(), dir);
+                math::vec3 refr_color = trace(refr_ray, depth + 1, ref_index);
+                color += refr_color * hit.mat().t();
+            }
         }
 
 		return color;
@@ -96,7 +120,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("jap.nff")))
+	if (!(sce.load_nff("scenes/mount_low.nff")))
 		return 0;
 
 	
