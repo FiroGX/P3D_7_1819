@@ -1,4 +1,6 @@
 #pragma once
+#include <cmath>
+#define _USE_MATH_DEFINES
 
 namespace math {
 	class vec3 {
@@ -61,5 +63,10 @@ namespace math {
 	// Normalization
 	inline vec3 normalize(const vec3 &v) {
 		return v / v.magnitude();
+	}
+
+	// Degrees to Radians conversion
+	inline float radian(const float degrees) {
+		return degrees = degrees * M_PI / 180;
 	}
 }

@@ -4,7 +4,7 @@
 p3d::camera::camera(math::vec3 eye, math::vec3 at, math::vec3 up, float hither, float fov, int resX, int resY) {
 
 	_eye = eye; _at = at;	_up = up;	_hither = hither; //attributions
-	_fov = fov; _resX = resX; _resY = resY;
+	_fov = math::radian(fov); _resX = resX; _resY = resY;
 
 	_ze = math::normalize(_eye - _at);				  //vector from at to the eye
 	_xe = math::normalize(math::cross(_up, _ze));	  //cross between up vector and Ze
