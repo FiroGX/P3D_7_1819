@@ -69,7 +69,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
             math::vec3 refl_color = trace(refl_ray, depth + 1, ref_index);
             color += refl_color * hit.mat().ks();
         }
-
+		
         if (hit.mat().t() > 0) {
             math::vec3 normal = hit.normal();
             float cosi = math::dot(ray.d(), normal);
@@ -77,7 +77,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
             if (cosi < 0) // Outside of surface
                 ior = ref_index / hit.mat().ref_index();
             else {  // inside of surface
-                ior = hit.mat().ref_index() / ref_index;
+				ior = hit.mat().ref_index(); // / ref_index;
                 normal = -normal;
             }
 
@@ -86,14 +86,14 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
             float sint = sini * ior;
 
             if (sint <= 1) {
-                float cost = std::sqrt(1 - sint);
+                float cost = std::sqrt(1 - sint * sint);
                 math::vec3 dir = math::normalize(vt) * sint - normal * cost;
-                p3d::ray refr_ray = p3d::ray(hit.point(), dir);
+                p3d::ray refr_ray = p3d::ray(hit.point() - dir * 0.000005f , dir); // em duvida se deveria ser hit.point() + dir * 0.000005f
                 math::vec3 refr_color = trace(refr_ray, depth + 1, ref_index);
                 color += refr_color * hit.mat().t();
             }
         }
-
+		
 		return color;
 	}
 }
