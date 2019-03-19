@@ -30,6 +30,7 @@ void reshape(int w, int h) {
 	glLoadIdentity();
 }
 
+/* Intersection of a ray with the closest object */
 hit calculate_hit(const ray &ray) {
 	hit closest;
 	for (auto obj : sce.objs()) {
@@ -40,6 +41,7 @@ hit calculate_hit(const ray &ray) {
 	return closest;
 }
 
+/* Shadow Feeler calculations; returns a bool according to collision */
 bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 	ray ray(hit_pos, l_dir);
 	ray.offset(math::KEPSILON);
@@ -47,16 +49,17 @@ bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 	return shadow_feeler.collided();
 }
 
+/* Tracing method. Returns color of the pixel */
 math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	hit hit = calculate_hit(ray);
 	if (!hit.collided()) return sce.b_color();
 	else {
 		math::vec3 color(0.0f, 0.0f, 0.0f);
-		for (light* l : sce.lights()) {
+		for (light* l : sce.lights()) {  //for each light source
 			math::vec3 l_dir = math::normalize(l->pos() - hit.point());
 			float lambert = math::dot(l_dir, hit.normal());
 			if (lambert > 0.0f)
-				if (!point_in_shadow(hit.point(), l_dir)) {
+				if (!point_in_shadow(hit.point(), l_dir)) {  //cast a shadow feeler
 					color += hit.mat().color() * l->color() * lambert * hit.mat().kd();
 					math::vec3 half_vec = math::normalize(-ray.d() + l_dir);
 					color += l->color() * hit.mat().ks() * std::pow(math::dot(hit.normal(), half_vec), hit.mat().shine());
@@ -65,6 +68,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 
 		if (depth >= MAX_DEPTH) return color;
 
+		// if the object is reflective
 		if (hit.mat().ks() > 0) {
 			math::vec3 dir = ray.d() - hit.normal() * math::dot(ray.d(), hit.normal()) * 2.0f;
 			p3d::ray refl_ray = p3d::ray(hit.point(), dir);
@@ -72,6 +76,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 			color += refl_color * hit.mat().ks();
 		}
 
+		// if the object is translucent
 		if (hit.mat().t() > 0) {
 			math::vec3 normal = hit.normal();
 			float cosi = math::dot(ray.d(), normal);
@@ -83,6 +88,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 				normal = -normal;
 			}
 
+			// refracted ray calculations
 			math::vec3 vt = normal * math::dot(-ray.d(), normal) + ray.d();
 			float sini = vt.magnitude();
 			float sint = sini * ior;
@@ -106,7 +112,7 @@ void drawScene() {
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 
-			ray ray = sce.cam().primaryRay(x, y);
+			ray ray = sce.cam().primaryRay(x, y); //for each pixel, cast a primary ray
 			math::vec3 color = trace(ray, 1, 1.0); //depth=1, ior=1.0
 			glBegin(GL_POINTS);
 			glColor3f(color.x(), color.y(), color.z());
