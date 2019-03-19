@@ -15,5 +15,7 @@ namespace p3d {
 
 		void o(const math::vec3);
 		void d(const math::vec3);
+
+		void offset(const float);
 	};
 }

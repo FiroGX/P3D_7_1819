@@ -3,8 +3,6 @@
 #include "hit.hpp"
 #include "ray.hpp"
 
-constexpr auto KEPSILON = 0.0001f;
-
 namespace p3d {
 	class scene_obj {
 	protected:

@@ -24,3 +24,7 @@ void p3d::ray::o(const math::vec3 o) {
 void p3d::ray::d(const math::vec3 d) {
 	_d = d;
 }
+
+void p3d::ray::offset(const float offset) {
+	_o += _d * offset;
+}

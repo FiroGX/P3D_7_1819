@@ -39,7 +39,7 @@ p3d::hit p3d::triangle::calculate_intersection(const p3d::ray &ray) const {
         denominator;
 
     if (beta < 0 || beta > 1 || gamma < 0 || gamma > 1 ||
-        beta + gamma < 0 || beta + gamma > 1 || t < KEPSILON)
+        beta + gamma < 0 || beta + gamma > 1 || t < math::KEPSILON)
         return hit();
 
     return hit(ray.o() + ray.d() * t, normal, _mat, t, true);

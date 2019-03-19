@@ -19,6 +19,6 @@ p3d::hit p3d::plane::calculate_intersection(const ray &ray) const {
 	if (math::dot(_normal, ray.d()) == 0.0f) return hit();
 
 	float t = math::dot(_point - ray.o(), _normal) / math::dot(ray.d(), _normal);
-	if (t > KEPSILON) return hit((ray.o() + ray.d() * t), _normal, _mat, t, true);
+	if (t > math::KEPSILON) return hit((ray.o() + ray.d() * t), _normal, _mat, t, true);
 	return hit();
 }
