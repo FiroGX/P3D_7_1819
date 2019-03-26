@@ -10,7 +10,7 @@
 #include "scene.hpp"
 #include "math/vec3.hpp"
 
-#define MAX_DEPTH 7
+#define MAX_DEPTH 3
 
 using namespace p3d;
 
@@ -67,21 +67,30 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 		}
 
 		if (depth >= MAX_DEPTH) return color;
-
+		
 		// if the object is reflective
 		if (hit.mat().ks() > 0) {
-			math::vec3 dir = ray.d() - hit.normal() * math::dot(ray.d(), hit.normal()) * 2.0f;
+
+			math::vec3 normal = hit.normal();
+			float cosi = math::dot(-ray.d(), normal);
+			
+			if (cosi < 0){ // Inside of surface
+				normal = -normal;
+			}
+
+			math::vec3 dir = ray.d() - normal * math::dot(ray.d(), normal) * 2.0f;
 			p3d::ray refl_ray = p3d::ray(hit.point(), dir);
+			refl_ray.offset(math::KEPSILON);
 			math::vec3 refl_color = trace(refl_ray, depth + 1, ref_index);
 			color += refl_color * hit.mat().ks();
 		}
-
+	
 		// if the object is translucent
 		if (hit.mat().t() > 0) {
 			math::vec3 normal = hit.normal();
-			float cosi = math::dot(ray.d(), normal);
+			float cosi = math::dot(-ray.d(), normal);
 			float ior;
-			if (cosi < 0) // Outside of surface
+			if (cosi > 0) // Outside of surface
 				ior = ref_index / hit.mat().ref_index();
 			else {  // inside of surface
 				ior = hit.mat().ref_index() / ref_index;
@@ -93,7 +102,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 			float sini = vt.magnitude();
 			float sint = sini * ior;
 
-			if (sint <= 1) {
+			if ((sint * sint) <= 1) {
 				float cost = std::sqrt(1 - sint * sint);
 				math::vec3 dir = math::normalize(vt) * sint - normal * cost;
 				p3d::ray refr_ray = p3d::ray(hit.point(), dir);
@@ -102,7 +111,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 				color += refr_color * hit.mat().t();
 			}
 		}
-
+	
 		return color;
 	}
 }

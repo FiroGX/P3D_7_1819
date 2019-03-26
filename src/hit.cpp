@@ -3,7 +3,7 @@
 #include <limits>
 
 p3d::hit::hit(math::vec3 point, math::vec3 normal, material mat, float distance, bool collided) {
-	_point = point; _normal = normal; _mat = mat; _distance = distance; _collided = collided;
+	_point = point; _normal = math::normalize(normal); _mat = mat; _distance = distance; _collided = collided;
 }
 
 p3d::hit::hit() {

@@ -3,7 +3,7 @@
 #include <math.h>
 
 namespace math {
-	constexpr auto KEPSILON = 0.0001f;
+	constexpr auto KEPSILON = 0.001f;
 
 	class vec3 {
 		float _x;

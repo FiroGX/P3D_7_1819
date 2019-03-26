@@ -35,7 +35,7 @@ p3d::hit p3d::sphere::calculate_intersection(const p3d::ray &ray) const {
 			t = b + std::sqrt(root);
 
 		if (t > math::KEPSILON)
-			return hit(ray.o() + ray.d() * t, math::normalize((-oc + ray.d() * t) / _radius), _mat, t, true);
+			return hit(ray.o() + ray.d() * t, math::normalize((ray.o() + ray.d() * t) - _center), _mat, t, true);
 
 		return hit();
 	}
