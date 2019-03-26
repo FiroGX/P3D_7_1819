@@ -8,7 +8,7 @@ p3d::hit::hit(math::vec3 point, math::vec3 normal, material mat, float distance,
 
 p3d::hit::hit() {
 	_collided = false;
-	_distance = FLT_MAX;
+	_distance = std::numeric_limits<float>::max();
 }
 
 p3d::hit::~hit() {}
