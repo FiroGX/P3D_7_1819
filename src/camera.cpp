@@ -20,9 +20,9 @@ p3d::camera::camera() {}
 p3d::camera::~camera() {}
 
 /* Primary Ray casting method */
-p3d::ray p3d::camera::primaryRay(int x, int y) {
-	float pixel_x = _width / _resX * ( x - _resX / 2.0f + 0.5); //x component on the pixel
-	float pixel_y = _height / _resY * ( y - _resY / 2.0f + 0.5); //y component on the pixel
+p3d::ray p3d::camera::primaryRay(float x, float y) {
+    float pixel_x = _width * (x / _resX - 0.5f); //x component on the pixel
+	float pixel_y = _height * (y / _resY - 0.5f); //y component on the pixel
 
 	math::vec3 dir(-_df * _ze + pixel_x * _xe + pixel_y * _ye);
 

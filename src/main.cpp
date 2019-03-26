@@ -97,6 +97,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 				float cost = std::sqrt(1 - sint * sint);
 				math::vec3 dir = math::normalize(vt) * sint - normal * cost;
 				p3d::ray refr_ray = p3d::ray(hit.point(), dir);
+                refr_ray.offset(math::KEPSILON);
 				math::vec3 refr_color = trace(refr_ray, depth + 1, ref_index);
 				color += refr_color * hit.mat().t();
 			}
@@ -112,7 +113,7 @@ void drawScene() {
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 
-			ray ray = sce.cam().primaryRay(x, y); //for each pixel, cast a primary ray
+			ray ray = sce.cam().primaryRay(x + 0.5f, y + 0.5f); //for each pixel, cast a primary ray
 			math::vec3 color = trace(ray, 1, 1.0); //depth=1, ior=1.0
 			glBegin(GL_POINTS);
 			glColor3f(color.x(), color.y(), color.z());

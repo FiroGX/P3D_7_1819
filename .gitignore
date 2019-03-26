@@ -331,3 +331,6 @@ ASALocalRun/
 
 # Do not ignore dependencies
 !dependencies/**
+
+# Ignore executable created by Makefile
+ray_tracer

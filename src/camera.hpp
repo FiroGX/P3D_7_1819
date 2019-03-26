@@ -23,7 +23,7 @@ namespace p3d {
 		camera();
 		~camera();
 
-		ray primaryRay(int, int);
+		ray primaryRay(float, float);
 		math::vec3 eye() const;
 		math::vec3 at() const;
 		math::vec3 up() const;
