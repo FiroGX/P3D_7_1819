@@ -1,8 +1,7 @@
 #include "vec3.hpp"
 #include <cmath>
 
-math::vec3::vec3() {
-	_x, _y, _z = 0.0f;
+math::vec3::vec3() : _x(0.0f), _y(0.0f), _z(0.0f) {
 }
 
 math::vec3::vec3(float x, float y, float z) {

@@ -2,8 +2,10 @@
 #include <GL/glut.h>
 #include <algorithm>
 #include <iostream>
+#include <cstdlib>
 #include <stdio.h>
 #include <cmath>
+#include <ctime>
 
 #include "hit.hpp"
 #include "ray.hpp"
@@ -11,6 +13,8 @@
 #include "math/vec3.hpp"
 
 #define MAX_DEPTH 3
+#define JITTERING false
+#define SAMPLE_SIZE 2
 
 using namespace p3d;
 
@@ -116,20 +120,44 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	}
 }
 
+math::vec3 jitter(int x, int y, int size) {
+  math::vec3 color;
+  std::pair<float,float> rays[size*size];
+
+  for (int i = 0; i < size*size; i++) {
+    rays[i].first = (float) std::rand() / (float) RAND_MAX;
+    rays[i].second = (float) std::rand() / (float) RAND_MAX;
+  }
+
+  for (int i = 0; i < size * size; i++) {
+    int p = i / size;
+    int q = i % size;
+    ray ray = sce.cam().primaryRay(x + (rays[i].first + p)/size, y + (rays[i].second + q) /size);
+    color += trace(ray, 1, 1.0);
+  }
+
+  return color / (size * size);
+}
+
 // Draw function by primary ray casting from the eye towards the scene's objects
 void drawScene() {
 
-	for (int y = 0; y < RES_Y; y++) {
+  std::srand(std::time(0) * std::time(0));
+    for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
-
+          math::vec3 color;
+          if (JITTERING) {
+            color = jitter(x,y,SAMPLE_SIZE);
+          } else {
 			ray ray = sce.cam().primaryRay(x + 0.5f, y + 0.5f); //for each pixel, cast a primary ray
-			math::vec3 color = trace(ray, 1, 1.0); //depth=1, ior=1.0
-			glBegin(GL_POINTS);
-			glColor3f(color.x(), color.y(), color.z());
-			glVertex2f(x, y);
+            color = trace(ray, 1, 1.0); //depth=1, ior=1.0
+          }
+          glBegin(GL_POINTS);
+          glColor3f(color.x(), color.y(), color.z());
+          glVertex2f(x, y);
 
-			glEnd();
-			glFlush();
+          glEnd();
+          glFlush();
 		}
 	}
 
@@ -138,7 +166,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("scenes/mount_low.nff")))
+	if (!(sce.load_nff("scenes/balls_low.nff")))
 		return 0;
 
 
