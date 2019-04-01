@@ -30,5 +30,5 @@ math::vec3 p3d::area_light::pos() {
   //random position calculation
   math::vec3 random_position = c + (a_epsilon * _vector_a) + (b_epsilon * _vector_b);
 
-  return random_position;
+  return random_position; //
 }
