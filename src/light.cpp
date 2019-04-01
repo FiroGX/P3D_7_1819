@@ -1,9 +1,6 @@
 #include "light.hpp"
 
-p3d::light::light(math::vec3 pos, math::vec3 color) {
-	_pos = pos;
-	_color = color;
-}
+p3d::light::light(math::vec3 position, math::vec3 color) : _pos(position), _color(color) {};
 
 p3d::light::~light() {}
 

@@ -10,10 +10,10 @@ namespace p3d {
 		light(math::vec3, math::vec3);
 		~light();
 
-		math::vec3 pos() const;
+		virtual math::vec3 pos() const;
 		math::vec3 color() const;
 
-		void pos(math::vec3);
+		virtual void pos(math::vec3);
 		void color(math::vec3);
 	};
 }

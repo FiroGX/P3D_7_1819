@@ -59,7 +59,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	if (!hit.collided()) return sce.b_color();
 	else {
 		math::vec3 color(0.0f, 0.0f, 0.0f);
-		for (light* l : sce.lights()) {  //for each light source
+		for (auto* l : sce.lights()) {  //for each light source
 			math::vec3 l_dir = math::normalize(l->pos() - hit.point());
 			float lambert = math::dot(l_dir, hit.normal());
 			if (lambert > 0.0f)
@@ -71,13 +71,13 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 		}
 
 		if (depth >= MAX_DEPTH) return color;
-		
+
 		// if the object is reflective
 		if (hit.mat().ks() > 0) {
 
 			math::vec3 normal = hit.normal();
 			float cosi = math::dot(-ray.d(), normal);
-			
+
 			if (cosi < 0){ // Inside of surface
 				normal = -normal;
 			}
@@ -88,7 +88,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 			math::vec3 refl_color = trace(refl_ray, depth + 1, ref_index);
 			color += refl_color * hit.mat().ks();
 		}
-	
+
 		// if the object is translucent
 		if (hit.mat().t() > 0) {
 			math::vec3 normal = hit.normal();
@@ -115,7 +115,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 				color += refr_color * hit.mat().t();
 			}
 		}
-	
+
 		return color;
 	}
 }
