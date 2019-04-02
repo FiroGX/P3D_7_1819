@@ -3,8 +3,9 @@
 
 namespace p3d {
 	class light {
-		math::vec3 _pos;
-		math::vec3 _color;
+		protected:
+			math::vec3 _pos;
+			math::vec3 _color;
 
 	public:
 		light(math::vec3, math::vec3);

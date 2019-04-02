@@ -5,7 +5,6 @@
 
 namespace p3d {
 	class area_light : public light{
-  protected:
     math::vec3 _vector_a;
     math::vec3 _vector_b;
 
