@@ -13,8 +13,12 @@
 #include "math/vec3.hpp"
 
 #define MAX_DEPTH 3
-#define JITTERING true
+#define JITTERING false
 #define SAMPLE_SIZE 2
+
+#define DOF false
+#define FOCAL_PLANE 1
+#define APERTURE 1
 
 using namespace p3d;
 
@@ -120,7 +124,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	}
 }
 
-math::vec3 jitter(int x, int y, const int size) {
+math::vec3 jitter(int x, int y, int size) {
   math::vec3 color;
   std::vector<std::pair<float,float>> rays(size*size);
 
@@ -137,6 +141,45 @@ math::vec3 jitter(int x, int y, const int size) {
   }
 
   return color / (size * size);
+}
+
+math::vec3 dof(int x, int y, int size) {
+	/*
+	To simulate DOF:
+– Compute the point p where the center ray hits the focal plane;
+– Use p and the sample point on the lens to compute the
+direction of the primary ray so that this ray also goes through p;
+– Ray-trace the primary ray into the scene; the center ray does
+not contribute to the pixel color
+	*/
+
+	math::vec3 color;
+	std::vector<std::pair<float, float>> rays(size*size);
+
+	for (int i = 0; i < size*size; i++) {
+		rays[i].first = (float)std::rand() * 2.0f / (float)RAND_MAX - 1 ;
+		rays[i].second = (float)std::rand()* 2.0f / (float)RAND_MAX - 1 ;
+	
+		if (rays[i].first * rays[i].first + rays[i].second * rays[i].second <= 1) { // se os parametros aleatorios estiverem dentro do circulo de circunferencia 1
+		}
+	}
+	//See if the points chosen are inside a circle??
+
+
+
+	for (int i = 0; i < size * size; i++) {
+		int p = i / size;
+		int q = i % size;
+		ray ray = sce.cam().primaryRay(x + (rays[i].first + p) / size, y + (rays[i].second + q) / size);
+		color += trace(ray, 1, 1.0);
+	}
+
+	return color / (size * size);
+	math::vec3 focal_plane_o = sce.cam().eye() + sce.cam().at() * FOCAL_PLANE;
+	math::vec3 focal_plane_d = sce.cam().at();
+
+
+	return color;
 }
 
 // Draw function by primary ray casting from the eye towards the scene's objects
