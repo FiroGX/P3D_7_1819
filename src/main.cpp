@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <cmath>
 #include <ctime>
+#include <random>
 
 #include "hit.hpp"
 #include "ray.hpp"
@@ -122,17 +123,29 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 
 math::vec3 jitter(int x, int y, const int size) {
   math::vec3 color;
-  std::vector<std::pair<float,float>> rays(size*size);
+  std::vector<std::pair<float,float>> pixel_samples(size*size);
+	std::vector<std::pair<float,float>> light_samples(size*size);
 
   for (int i = 0; i < size*size; i++) {
-    rays[i].first = (float) std::rand() / (float) RAND_MAX;
-    rays[i].second = (float) std::rand() / (float) RAND_MAX;
+		//division of pixels (and light sources) in size*size
+		int p = i / size;
+    int q = i % size;
+
+		//defining random points in each pixel sub-division
+		pixel_samples[i].first = (((float)std::rand() / (float)RAND_MAX) + p) / size;
+    pixel_samples[i].second = (((float)std::rand() / (float)RAND_MAX) + q) / size;
+
+		//defining random points in each light source sub-division
+		light_samples[i].first = (((float)std::rand() / (float)RAND_MAX) + p) / size;
+		light_samples[i].second = (((float)std::rand() / (float)RAND_MAX) + q) / size;
   }
 
-  for (int i = 0; i < size * size; i++) {
-    int p = i / size;
-    int q = i % size;
-    ray ray = sce.cam().primaryRay(x + (rays[i].first + p)/size, y + (rays[i].second + q) /size);
+	//shuffling the light samples
+	std::shuffle(light_samples.begin(), light_samples.end(), std::default_random_engine());
+
+	//calculation and tracing of the sample primary rays
+  for (int i = 0; i < size*size; i++) {
+    ray ray = sce.cam().primaryRay(x+pixel_samples[i].first, y+pixel_samples[i].second);
     color += trace(ray, 1, 1.0);
   }
 
