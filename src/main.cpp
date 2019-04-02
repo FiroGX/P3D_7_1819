@@ -13,7 +13,7 @@
 #include "math/vec3.hpp"
 
 #define MAX_DEPTH 3
-#define JITTERING false
+#define JITTERING true
 #define SAMPLE_SIZE 2
 
 using namespace p3d;
@@ -120,9 +120,9 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 	}
 }
 
-math::vec3 jitter(int x, int y, int size) {
+math::vec3 jitter(int x, int y, const int size) {
   math::vec3 color;
-  std::pair<float,float> rays[size*size];
+  std::vector<std::pair<float,float>> rays(size*size);
 
   for (int i = 0; i < size*size; i++) {
     rays[i].first = (float) std::rand() / (float) RAND_MAX;
@@ -166,7 +166,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("scenes/balls_low.nff")))
+	if (!(sce.load_nff("scenes/mount_low.nff")))
 		return 0;
 
 
