@@ -40,3 +40,8 @@ p3d::hit p3d::sphere::calculate_intersection(const p3d::ray &ray) const {
 		return hit();
 	}
 }
+
+p3d::b_box p3d::sphere::box() const {
+    return b_box(_center.x() - _radius, _center.y() - _radius, _center.z() - _radius,
+        _center.x() + _radius, _center.y() + _radius, _center.z() + _radius);
+}

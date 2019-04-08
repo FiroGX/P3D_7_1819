@@ -22,3 +22,7 @@ p3d::hit p3d::plane::calculate_intersection(const ray &ray) const {
 	if (t > math::KEPSILON) return hit((ray.o() + ray.d() * t), _normal, _mat, t, true);
 	return hit();
 }
+
+p3d::b_box p3d::plane::box() const {
+    return b_box();
+}

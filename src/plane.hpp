@@ -14,5 +14,6 @@ namespace p3d {
 		math::vec3 point();
 		math::vec3 normal();
 		virtual hit calculate_intersection(const ray &) const;
+        virtual b_box box() const;
 	};
 }

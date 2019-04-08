@@ -10,9 +10,12 @@ namespace p3d {
 	public:
 		triangle(math::vec3, math::vec3, math::vec3, material);
 	    ~triangle();
+
 		const math::vec3 &a();
 		const math::vec3 &b();
 		const math::vec3 &c();
+
 		virtual hit calculate_intersection(const ray &) const;
+        virtual b_box box() const;
 	};
 }

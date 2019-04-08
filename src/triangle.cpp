@@ -1,5 +1,7 @@
 #include "triangle.hpp"
 
+#include <algorithm>
+
 p3d::triangle::triangle(math::vec3 a, math::vec3 b, math::vec3 c, p3d::material mat) :
     scene_obj(mat), _a(a), _b(b), _c(c) {
 }
@@ -43,4 +45,10 @@ p3d::hit p3d::triangle::calculate_intersection(const p3d::ray &ray) const {
         return hit();
 
     return hit(ray.o() + ray.d() * t, normal, _mat, t, true);
+}
+
+p3d::b_box p3d::triangle::box() const {
+    return b_box(std::min(std::min(_a.x(), _b.x()), _c.x()) - math::KEPSILON, std::max(std::max(_a.x(), _b.x()), _c.x()) + math::KEPSILON,
+        std::min(std::min(_a.y(), _b.y()), _c.y()) - math::KEPSILON, std::max(std::max(_a.y(), _b.y()), _c.y()) + math::KEPSILON,
+        std::min(std::min(_a.z(), _b.z()), _c.z()) - math::KEPSILON, std::max(std::max(_a.z(), _b.z()), _c.z()) + math::KEPSILON);
 }
