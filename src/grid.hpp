@@ -10,13 +10,13 @@ namespace p3d {
         b_box _b_box;
         int _nx, _ny, _nz;
 
-        math::vec3 min_coordinates();
-        math::vec3 max_coordinates();
+        math::vec3 min_coordinates(const std::vector<scene_obj *> &);
+        math::vec3 max_coordinates(const std::vector<scene_obj *> &);
 
     public:
         grid() = default;
         ~grid() = default;
 
-        void setup_cells();
+        void setup_cells(const std::vector<scene_obj *> &);
     };
 }
