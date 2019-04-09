@@ -6,7 +6,7 @@
 
 namespace p3d {
     class grid {
-        std::vector<scene_obj *> _cells;
+        std::vector<std::vector<scene_obj *>> _cells;
         b_box _b_box;
         int _nx, _ny, _nz;
 
@@ -18,5 +18,6 @@ namespace p3d {
         ~grid() = default;
 
         void setup_cells(const std::vector<scene_obj *> &);
+        hit traverse(const ray &);
     };
 }

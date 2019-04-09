@@ -64,6 +64,40 @@ void p3d::grid::setup_cells(const std::vector<scene_obj *> &objs) {
     _nx = mult * wx / s + 1;
     _ny = mult * wy / s + 1;
     _nz = mult * wz / s + 1;
+    int num_cells = _nx * _ny * _nz;
 
+    // initialize the cells
+    _cells = std::vector<std::vector<scene_obj *>>(num_cells, std::vector<scene_obj *>());
 
+    // 
+    for (scene_obj *obj : objs) {
+      b_box obj_box = obj->box();
+      int ixmin = math::clamp((obj_box.x0() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
+      int iymin = math::clamp((obj_box.y0() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
+      int izmin = math::clamp((obj_box.z0() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
+      int ixmax = math::clamp((obj_box.x1() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
+      int iymax = math::clamp((obj_box.y1() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
+      int izmax = math::clamp((obj_box.z1() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
+
+      // add objects to the cells
+      for (int iz = izmin; iz < izmax; iz++) {
+        for (int iy = iymin; iy < iymax; iy++) {
+          for (int ix = ixmin; ix < ixmax; ix++) {
+            int index = ix + _nx * iy + _nx * _ny * iz;
+            _cells[index].push_back(obj);
+          }
+        }
+      }
+    }
+}
+
+p3d::hit p3d::grid::traverse(const ray &ray) {
+  // if the ray doesn't intersect the grid, ignore
+  if (!_b_box.collided(ray))
+    return hit();
+
+  // calculate what is the initial cell of the ray intersection
+  int ix, iy, iz;
+  
+  return hit();
 }

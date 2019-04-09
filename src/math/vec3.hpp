@@ -1,6 +1,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm>
 
 namespace math {
 	constexpr auto KEPSILON = 0.001f;
@@ -71,4 +72,8 @@ namespace math {
 	inline float radian(const float degrees) {
 		return degrees * M_PI / 180;
 	}
+
+    inline float clamp(float n, float lower, float upper) {
+        return std::max(lower, std::min(n, upper));
+    }
 }
