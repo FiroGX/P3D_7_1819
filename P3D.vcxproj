@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="src\b_box.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\grid.cpp" />
     <ClCompile Include="src\hit.cpp" />
     <ClCompile Include="src\light.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="src\b_box.hpp" />
     <ClInclude Include="src\camera.hpp" />
+    <ClInclude Include="src\grid.hpp" />
     <ClInclude Include="src\hit.hpp" />
     <ClInclude Include="src\light.hpp" />
     <ClInclude Include="src\material.hpp" />

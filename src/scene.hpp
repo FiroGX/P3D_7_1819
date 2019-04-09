@@ -20,6 +20,7 @@ namespace p3d {
 		math::vec3 b_color() const;
 		std::vector<light*> lights() const;
 		std::vector<scene_obj*> objs() const;
+        hit calculate_hit(const ray &) const;
 		bool load_nff(const std::string);
 	};
 }

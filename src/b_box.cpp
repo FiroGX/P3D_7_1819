@@ -13,6 +13,30 @@ p3d::b_box::b_box(float x0, float y0, float z0,
     _x1(x1), _y1(y1), _z1(z1) {
 }
 
+float p3d::b_box::x0() {
+    return _x0;
+}
+
+float p3d::b_box::y0() {
+    return _y0;
+}
+
+float p3d::b_box::z0() {
+    return _z0;
+}
+
+float p3d::b_box::x1() {
+    return _x1;
+}
+
+float p3d::b_box::y1() {
+    return _y1;
+}
+
+float p3d::b_box::z1() {
+    return _z1;
+}
+
 bool p3d::b_box::collided(const ray &ray) {
     float tx_min, ty_min, tz_min;
     float tx_max, ty_max, tz_max;

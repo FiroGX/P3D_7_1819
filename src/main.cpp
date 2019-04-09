@@ -39,28 +39,17 @@ void reshape(int w, int h) {
 	glLoadIdentity();
 }
 
-/* Intersection of a ray with the closest object */
-hit calculate_hit(const ray &ray) {
-	hit closest;
-	for (auto obj : sce.objs()) {
-		hit hit = obj->calculate_intersection(ray);
-		if (hit.collided() && hit.distance() < closest.distance())
-			closest = hit;
-	}
-	return closest;
-}
-
 /* Shadow Feeler calculations; returns a bool according to collision */
 bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 	ray ray(hit_pos, l_dir);
 	ray.offset(math::KEPSILON);
-	hit shadow_feeler = calculate_hit(ray);
+	hit shadow_feeler = sce.calculate_hit(ray);
 	return shadow_feeler.collided();
 }
 
 /* Tracing method. Returns color of the pixel */
 math::vec3 trace(const ray &ray, int depth, float ref_index) {
-	hit hit = calculate_hit(ray);
+	hit hit = sce.calculate_hit(ray);
 	if (!hit.collided()) return sce.b_color();
 	else {
 		math::vec3 color(0.0f, 0.0f, 0.0f);

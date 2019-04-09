@@ -34,6 +34,16 @@ std::vector<p3d::scene_obj*> p3d::scene::objs() const {
 	return _objs;
 }
 
+p3d::hit p3d::scene::calculate_hit(const ray &ray) const {
+    hit closest;
+    for (auto obj : _objs) {
+        hit hit = obj->calculate_intersection(ray);
+        if (hit.collided() && hit.distance() < closest.distance())
+            closest = hit;
+    }
+    return closest;
+}
+
 /*
 Taken from the interwebs
 It returns a string array that each element contains a subset of the original string str up to the next separator sep segment
