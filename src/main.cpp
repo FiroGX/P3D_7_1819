@@ -47,22 +47,48 @@ bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 	return shadow_feeler.collided();
 }
 
-/* Tracing method. Returns color of the pixel */
-math::vec3 trace(const ray &ray, int depth, float ref_index) {
-	hit hit = sce.calculate_hit(ray);
-	if (!hit.collided()) return sce.b_color();
-	else {
-		math::vec3 color(0.0f, 0.0f, 0.0f);
-		for (auto* l : sce.lights()) {  //for each light source
+
+/* Local color calculation */
+math::vec3 local_color(const hit &hit, const std::pair<float, float> &light_sample) {
+	math::vec3 color(0.0f, 0.0f, 0.0f);
+	for (auto* l : sce.lights()) {  //for each light source
+
+		if (!l->is_area()) { //if light-source is a point light
 			math::vec3 l_dir = math::normalize(l->pos() - hit.point());
 			float lambert = math::dot(l_dir, hit.normal());
 			if (lambert > 0.0f)
-				if (!point_in_shadow(hit.point(), l_dir)) {  //cast a shadow feeler
+				if (!point_in_shadow(hit.point(), l_dir)) {  	//cast a shadow feeler normally
 					color += hit.mat().color() * l->color() * lambert * hit.mat().kd();
 					math::vec3 half_vec = math::normalize(-ray.d() + l_dir);
 					color += l->color() * hit.mat().ks() * std::pow(math::dot(hit.normal(), half_vec), hit.mat().shine());
 				}
+
+	//further cases are area lights (is_area() returns true)
+	} else if (JITTERING) { //area light with jittering flag is on
+		math::vec3 l_dir;
+		float lambert = math::dot(l_dir, hit.normal());
+		if (lambert > 0.0f)
+			if (!point_in_shadow(hit.point(), l_dir)) {  	//cast a shadow feeler normally
+				color += hit.mat().color() * l->color() * lambert * hit.mat().kd();
+				math::vec3 half_vec = math::normalize(-ray.d() + l_dir);
+				color += l->color() * hit.mat().ks() * std::pow(math::dot(hit.normal(), half_vec), hit.mat().shine());
+			}
+	} else { //area light with no jittering
+
 		}
+	}
+
+	return color;
+}
+
+
+/* Tracing method. Returns color of the pixel */
+math::vec3 trace(const ray &ray, int depth, float ref_index, std::pair<float, float> light_sample) {
+	hit hit = sce.calculate_hit(ray);
+	if (!hit.collided()) return sce.b_color();
+	else {
+		//calculating local color using the light sample
+		math::vec3 color = local_color(hit, light_sample);
 
 		if (depth >= MAX_DEPTH) return color;
 
@@ -79,7 +105,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 			math::vec3 dir = ray.d() - normal * math::dot(ray.d(), normal) * 2.0f;
 			p3d::ray refl_ray = p3d::ray(hit.point(), dir);
 			refl_ray.offset(math::KEPSILON);
-			math::vec3 refl_color = trace(refl_ray, depth + 1, ref_index);
+			math::vec3 refl_color = trace(refl_ray, depth + 1, ref_index, light_sample);
 			color += refl_color * hit.mat().ks();
 		}
 
@@ -105,7 +131,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index) {
 				math::vec3 dir = math::normalize(vt) * sint - normal * cost;
 				p3d::ray refr_ray = p3d::ray(hit.point(), dir);
                 refr_ray.offset(math::KEPSILON);
-				math::vec3 refr_color = trace(refr_ray, depth + 1, ref_index);
+				math::vec3 refr_color = trace(refr_ray, depth + 1, ref_index, light_sample);
 				color += refr_color * hit.mat().t();
 			}
 		}
@@ -139,19 +165,19 @@ math::vec3 jitter(int x, int y, int size) {
 	//calculation and tracing of the sample primary rays
   for (int i = 0; i < size*size; i++) {
     ray ray = sce.cam().primaryRay(x+pixel_samples[i].first, y+pixel_samples[i].second);
-    color += trace(ray, 1, 1.0);
+    color += trace(ray, 1, 1.0, light_samples[i]); //casts ray and sends light sample
   }
 
-  return color / (size * size);
+  return color / (size * size); //returns average color by # of samples
 }
 
 math::vec3 dof(int x, int y, int size) { // with Antialising
 	/*
 	To simulate DOF:
-	– Compute the point p where the center ray hits the focal plane;
-	– Use p and the sample point on the lens to compute the
+	Compute the point p where the center ray hits the focal plane;
+	Use p and the sample point on the lens to compute the
 	direction of the primary ray so that this ray also goes through p;
-	– Ray-trace the primary ray into the scene; the center ray does
+	Ray-trace the primary ray into the scene; the center ray does
 	not contribute to the pixel color
 	*/
 
@@ -168,19 +194,19 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 	float pointInFocalPlaneWidth = (x * focaldistance) / viewDistance;
 	float pointInFocalPlaneHeight = (y * focaldistance) / viewDistance;
 
-	math::vec3 pointP(sce.cam().ze() * focaldistance + 
-		pointInFocalPlaneWidth * sce.cam().xe() + 
+	math::vec3 pointP(sce.cam().ze() * focaldistance +
+		pointInFocalPlaneWidth * sce.cam().xe() +
 		pointInFocalPlaneHeight * sce.cam().ye());
 
 
 	//LENS
-	// é uma area circular de centro eye da camara e raio r
+	// ï¿½ uma area circular de centro eye da camara e raio r
 
 	math::vec3 color;
 	std::vector<std::pair<float, float>> lens_samples(size*size);
 
 	for (int i = 0; i < size*size; i++) {
-		
+
 		bool inCircle = false;
 		//defining random points in each lens sub-division
 		float randX;
@@ -213,7 +239,7 @@ void drawScene() {
             color = jitter(x,y,SAMPLE_SIZE);
           } else {
 			ray ray = sce.cam().primaryRay(x + 0.5f, y + 0.5f); //for each pixel, cast a primary ray
-            color = trace(ray, 1, 1.0); //depth=1, ior=1.0
+            color = trace(ray, 1, 1.0, std::pair<float, float>(0.0f, 0.0f)); //depth=1, ior=1.0
           }
           glBegin(GL_POINTS);
           glColor3f(color.x(), color.y(), color.z());

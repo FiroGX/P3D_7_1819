@@ -12,6 +12,10 @@ math::vec3 p3d::light::color() const {
 	return _color;
 }
 
+bool is_area() const {
+	return _is_area;
+}
+
 void p3d::light::pos(math::vec3 pos) {
 	_pos = pos;
 }

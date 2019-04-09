@@ -1,6 +1,8 @@
 #include "area_light.hpp"
 
-p3d::area_light::area_light(math::vec3 position, math::vec3 a, math::vec3 b, math::vec3 color) : light(position, color), _vector_a(a), _vector_b(b) {};
+p3d::area_light::area_light(math::vec3 position, math::vec3 a, math::vec3 b, math::vec3 color) : light(position, color), _vector_a(a), _vector_b(b) {
+	_is_area = true;
+};
 
 p3d::area_light::~area_light() {}
 
