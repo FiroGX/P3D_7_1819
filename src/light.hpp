@@ -14,7 +14,7 @@ namespace p3d {
 
 		virtual math::vec3 pos() const;
 		math::vec3 color() const;
-		bool is_area() const;
+		bool is_area();
 
 		virtual void pos(math::vec3);
 		void color(math::vec3);

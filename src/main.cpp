@@ -49,7 +49,7 @@ bool point_in_shadow(const math::vec3 &hit_pos, const math::vec3 &l_dir) {
 
 
 /* Local color calculation */
-math::vec3 local_color(const hit &hit, const std::pair<float, float> &light_sample) {
+math::vec3 local_color(const ray &ray, const hit &hit, const std::pair<float, float> &light_sample) {
 	math::vec3 color(0.0f, 0.0f, 0.0f);
 	for (auto* l : sce.lights()) {  //for each light source
 
@@ -88,7 +88,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index, std::pair<float, fl
 	if (!hit.collided()) return sce.b_color();
 	else {
 		//calculating local color using the light sample
-		math::vec3 color = local_color(hit, light_sample);
+		math::vec3 color = local_color(ray, hit, light_sample);
 
 		if (depth >= MAX_DEPTH) return color;
 
@@ -213,8 +213,8 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 		float randY;
 
 		while (!inCircle) {
-			float randX = ((float)std::rand() / (float)RAND_MAX);
-			float randY = ((float)std::rand() / (float)RAND_MAX);
+			randX = ((float)std::rand() / (float)RAND_MAX);
+			randY = ((float)std::rand() / (float)RAND_MAX);
 			if (std::sqrtf(std::pow(randX, 2) + std::pow(randY, 2))) {
 				inCircle = true;
 			}

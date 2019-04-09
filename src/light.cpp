@@ -12,7 +12,7 @@ math::vec3 p3d::light::color() const {
 	return _color;
 }
 
-bool is_area() const {
+bool p3d::light::is_area() {
 	return _is_area;
 }
 
