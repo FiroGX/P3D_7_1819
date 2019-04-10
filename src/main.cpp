@@ -17,9 +17,9 @@
 #define JITTERING false
 #define SAMPLE_SIZE 2
 
-#define DOF false
-#define FOCAL_PLANE_DISTANCE = 1;
-#define APERTURE 1
+#define DOF true
+#define FOCAL_PLANE_DISTANCE 5;
+#define APERTURE 0.1	// lens radius
 
 using namespace p3d;
 
@@ -181,26 +181,35 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 	not contribute to the pixel color
 	*/
 
+	ray rayDirPixelFromEye = sce.cam().primaryRay(x,y); // para ficar com o raio até ao pixel
+
+	float width = sce.cam().width(), 
+		height = sce.cam().height(), 
+		resX = sce.cam().resX(), 
+		resY = sce.cam().resY();
+
+	float pixel_x = width * (x / resX - 0.5f); //x component on the pixel
+	float pixel_y = height * (y / resY - 0.5f); //y component on the pixel
+
+
 	//POINT P
 
-	math::vec3 viewDirection =  sce.cam().eye() - sce.cam().at();
+	math::vec3 df = sce.cam().eye() - sce.cam().at();
 
-	float viewDistance = viewDirection.magnitude();
+	float focaldistance = df.magnitude(); //FOCAL_PLANE_DISTANCE; //REMEMBER TO CHANGE THIS TO FOCAL_PLANE_DISTANCE
 
-	float focaldistance = viewDistance; //REMEMBER TO CHANGE THIS TO FOCAL_PLANE_DISTANCE
+	math::vec3 directionToP(-sce.cam().df() * sce.cam().ze()
+		+ pixel_x * sce.cam().xe()
+		+ pixel_y * sce.cam().ye());
 
+	float distanceToP = (focaldistance * directionToP.magnitude()) / sce.cam().df(); // distance from eye to point P
 
-
-	float pointInFocalPlaneWidth = (x * focaldistance) / viewDistance;
-	float pointInFocalPlaneHeight = (y * focaldistance) / viewDistance;
-
-	math::vec3 pointP(sce.cam().ze() * focaldistance +
-		pointInFocalPlaneWidth * sce.cam().xe() +
-		pointInFocalPlaneHeight * sce.cam().ye());
+	//printf("DISTANCE TO P %f\n",distanceToP);
+	math::vec3 pointP = distanceToP * directionToP;
 
 
 	//LENS
-	// � uma area circular de centro eye da camara e raio r
+	// � uma area circular de centro eye da camara e raio APERTURE
 
 	math::vec3 color;
 	std::vector<std::pair<float, float>> lens_samples(size*size);
@@ -213,19 +222,32 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 		float randY;
 
 		while (!inCircle) {
-			randX = ((float)std::rand() / (float)RAND_MAX);
-			randY = ((float)std::rand() / (float)RAND_MAX);
-			if (std::sqrtf(std::pow(randX, 2) + std::pow(randY, 2))) {
+			randX = (((float)std::rand() / (float)RAND_MAX) * 2) - 1;
+			randY = (((float)std::rand() / (float)RAND_MAX) * 2) - 1;
+			if (std::sqrtf(std::pow(randX, 2) + std::pow(randY, 2)) <= 1 ) {
 				inCircle = true;
 			}
 		}
 
 		lens_samples[i].first = randX * APERTURE;
 		lens_samples[i].second = randY * APERTURE;
-
 	}
 
-	return color;
+	//shuffling lens samples
+	std::shuffle(lens_samples.begin(), lens_samples.end(), std::default_random_engine());
+
+	//calculation and tracing of the sample primary rays
+	for (int i = 0; i < size*size; i++) {
+		
+		math::vec3 lensPoint = sce.cam().eye() +
+			(sce.cam().xe() * lens_samples[i].first) +
+			(sce.cam().ye() * lens_samples[i].second);
+		
+		ray ray(lensPoint , pointP-lensPoint);	
+		color += trace(ray, 1, 1.0, lens_samples[i]);
+	}
+
+	return color / (size * size); //returns average color by # of samples
 }
 
 // Draw function by primary ray casting from the eye towards the scene's objects
@@ -241,11 +263,15 @@ void drawScene() {
 			ray ray = sce.cam().primaryRay(x + 0.5f, y + 0.5f); //for each pixel, cast a primary ray
             color = trace(ray, 1, 1.0, std::pair<float, float>(0.0f, 0.0f)); //depth=1, ior=1.0
           }
+		  if (DOF) {
+			  color = dof(x, y, SAMPLE_SIZE);
+		  }
+
           glBegin(GL_POINTS);
           glColor3f(color.x(), color.y(), color.z());
           glVertex2f(x, y);
 
-          glEnd();
+		  glEnd();
           glFlush();
 		}
 	}
@@ -255,7 +281,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("scenes/mount_low.nff")))
+	if (!(sce.load_nff("scenes/balls_low.nff")))
 		return 0;
 
 
