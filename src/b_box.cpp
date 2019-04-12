@@ -37,7 +37,7 @@ float p3d::b_box::z1() {
     return _z1;
 }
 
-bool p3d::b_box::collided(const ray &ray) {
+p3d::hit p3d::b_box::collision(const ray &ray) {
     float tx_min, ty_min, tz_min;
     float tx_max, ty_max, tz_max;
 
@@ -85,7 +85,10 @@ bool p3d::b_box::collided(const ray &ray) {
     if (tz_max < t1)
         t1 = tz_max;
 
-    return t0 < t1 && t1 > math::KEPSILON;
+    if (t0 < t1 && t1 > math::KEPSILON)
+        return hit(math::vec3(tx_max, ty_max, tz_max), math::vec3(tx_min, ty_min, tz_min), material(), t0, true);
+
+    return hit();
 }
 
 bool p3d::b_box::inside(math::vec3 p) {

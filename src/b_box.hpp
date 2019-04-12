@@ -21,7 +21,7 @@ namespace p3d {
         float y1();
         float z1();
 
-        bool collided(const ray &);
+        hit collision(const ray &);
         bool inside(math::vec3);
     };
 }

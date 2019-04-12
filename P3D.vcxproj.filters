@@ -103,5 +103,20 @@
     <None Include="scenes\mount_low.nff">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="scenes\balls_high.nff">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scenes\balls_low.nff">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scenes\balls_medium.nff">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scenes\mount_high.nff">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scenes\mount_very_high.nff">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

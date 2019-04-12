@@ -14,10 +14,12 @@
 #include "math/vec3.hpp"
 
 #define MAX_DEPTH 3
+
 #define JITTERING false
 #define SAMPLE_SIZE 2
+#define GRID false
 
-#define DOF true
+#define DOF false
 #define FOCAL_PLANE_DISTANCE 5;
 #define APERTURE 0.1	// lens radius
 
@@ -284,6 +286,8 @@ int main(int argc, char**argv) {
 	if (!(sce.load_nff("scenes/balls_low.nff")))
 		return 0;
 
+    if (GRID)
+        sce.setup_grid();
 
 	RES_X = sce.cam().resX();
 	RES_Y = sce.cam().resY();

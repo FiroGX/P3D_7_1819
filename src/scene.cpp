@@ -34,7 +34,10 @@ std::vector<p3d::scene_obj*> p3d::scene::objs() const {
 	return _objs;
 }
 
-p3d::hit p3d::scene::calculate_hit(const ray &ray) const {
+p3d::hit p3d::scene::calculate_hit(const ray &ray) {
+    if (_grid_on)
+        return _grid.traverse(ray);
+
     hit closest;
     for (auto obj : _objs) {
         hit hit = obj->calculate_intersection(ray);
@@ -218,6 +221,11 @@ bool p3d::scene::load_nff(const std::string name) {
 		return false;
 	}
 	return true;
+}
+
+void p3d::scene::setup_grid() {
+    _grid.setup_cells(_objs);
+    _grid_on = true;
 }
 
 

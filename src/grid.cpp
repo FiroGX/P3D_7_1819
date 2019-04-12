@@ -1,5 +1,6 @@
 #include "grid.hpp"
 
+#include <iostream>
 #include <cmath>
 #include <limits>
 
@@ -69,35 +70,124 @@ void p3d::grid::setup_cells(const std::vector<scene_obj *> &objs) {
     // initialize the cells
     _cells = std::vector<std::vector<scene_obj *>>(num_cells, std::vector<scene_obj *>());
 
-    // 
     for (scene_obj *obj : objs) {
-      b_box obj_box = obj->box();
-      int ixmin = math::clamp((obj_box.x0() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
-      int iymin = math::clamp((obj_box.y0() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
-      int izmin = math::clamp((obj_box.z0() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
-      int ixmax = math::clamp((obj_box.x1() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
-      int iymax = math::clamp((obj_box.y1() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
-      int izmax = math::clamp((obj_box.z1() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
+        b_box obj_box = obj->box();
+        int ixmin = math::clamp((obj_box.x0() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
+        int iymin = math::clamp((obj_box.y0() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
+        int izmin = math::clamp((obj_box.z0() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
+        int ixmax = math::clamp((obj_box.x1() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
+        int iymax = math::clamp((obj_box.y1() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
+        int izmax = math::clamp((obj_box.z1() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
 
-      // add objects to the cells
-      for (int iz = izmin; iz < izmax; iz++) {
-        for (int iy = iymin; iy < iymax; iy++) {
-          for (int ix = ixmin; ix < ixmax; ix++) {
-            int index = ix + _nx * iy + _nx * _ny * iz;
-            _cells[index].push_back(obj);
-          }
+        // add objects to the cells
+        for (int iz = izmin; iz < izmax; iz++) {
+            for (int iy = iymin; iy < iymax; iy++) {
+                for (int ix = ixmin; ix < ixmax; ix++) {
+                    int index = ix + _nx * iy + _nx * _ny * iz;
+                    _cells[index].push_back(obj);
+                }
+            }
         }
-      }
     }
 }
 
-p3d::hit p3d::grid::traverse(const ray &ray) {
-  // if the ray doesn't intersect the grid, ignore
-  if (!_b_box.collided(ray))
-    return hit();
+p3d::hit p3d::grid::calculate_hit(const std::vector<scene_obj*> &objs, const ray &ray) {
+    hit closest;
+    for (scene_obj *obj : objs) {
+        hit hit = obj->calculate_intersection(ray);
+        if (hit.collided() && hit.distance() < closest.distance())
+            closest = hit;
+    }
+    return closest;
+}
 
-  // calculate what is the initial cell of the ray intersection
-  int ix, iy, iz;
-  
-  return hit();
+p3d::hit p3d::grid::traverse(const ray &ray) {
+    // if the ray doesn't intersect the grid, ignore
+    hit col = _b_box.collision(ray);
+    if (!col.collided())
+        return col;
+
+    float t0 = col.distance();
+    math::vec3 t_max = col.point();
+    math::vec3 t_min = col.normal();
+
+    // calculate what is the initial cell of the ray intersection
+    int ix, iy, iz;
+    if (_b_box.inside(ray.o())) {
+        if (last != 0) {
+            std::cout << "inside" << std::endl;
+            last = 0;
+        }
+        ix = math::clamp((ray.o().x() - _b_box.x0()) * _nx / (_b_box.x1() - _b_box.x0()), 0, _nx - 1);
+        iy = math::clamp((ray.o().y() - _b_box.y0()) * _ny / (_b_box.y1() - _b_box.y0()), 0, _ny - 1);
+        iz = math::clamp((ray.o().z() - _b_box.z0()) * _nz / (_b_box.z1() - _b_box.z0()), 0, _nz - 1);
+    } else {
+        if (last != 1) {
+            std::cout << "outside" << std::endl;
+            last = 1;
+        }
+        math::vec3 p = ray.o() + t0 * ray.d();
+        ix = math::clamp((p.x() - _b_box.x0()) * _nx / (_b_box.x1() - _b_box.x0()), 0, _nx - 1);
+        iy = math::clamp((p.y() - _b_box.y0()) * _ny / (_b_box.y1() - _b_box.y0()), 0, _ny - 1);
+        iz = math::clamp((p.z() - _b_box.z0()) * _nz / (_b_box.z1() - _b_box.z0()), 0, _nz - 1);
+    }
+
+    // code setup for grid traversal
+    float dtx = (t_max.x() - t_min.x()) / _nx;
+    float dty = (t_max.y() - t_min.y()) / _ny;
+    float dtz = (t_max.z() - t_min.z()) / _nz;
+
+    float tx_next, ty_next, tz_next;
+    int	ix_step, iy_step, iz_step;
+    int ix_stop, iy_stop, iz_stop;
+
+    tx_next = t_min.x() + (ix + 1) * dtx;
+    ix_step = 1;
+    ix_stop = _nx;
+
+    ty_next = t_min.y() + (iy + 1) * dty;
+    iy_step = 1;
+    iy_stop = _ny;
+
+    tz_next = t_min.z() + (iz + 1) * dtz;
+    iz_step = 1;
+    iz_stop = _nz;
+
+    // grid traversal
+    while (true) {
+        int index = ix + _nx * iy + _nx * _ny * iz;
+        std::vector<scene_obj*> objs = _cells[index];
+        if (tx_next < ty_next && tx_next < tz_next) {
+            hit close = calculate_hit(objs, ray);
+            if (close.collided() && close.distance() < tx_next)
+                return close;
+
+            tx_next += dtx;
+            ix += ix_step;
+
+            if (ix == ix_stop)
+                return hit();
+        } else if (ty_next < tz_next) {
+            hit close = calculate_hit(objs, ray);
+            if (close.collided() && close.distance() < ty_next)
+                return close;
+
+            ty_next += dty;
+            iy += iy_step;
+
+            if (iy == iy_stop)
+                return hit();
+        } else {
+            
+            hit close = calculate_hit(objs, ray);
+            if (close.collided() && close.distance() < tz_next)
+                return close;
+
+            tz_next += dtz;
+            iz += iz_step;
+
+            if (iz == iz_stop)
+                return hit();
+        }
+    }
 }

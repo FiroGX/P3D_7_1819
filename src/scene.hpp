@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "grid.hpp"
 #include "light.hpp"
 #include "camera.hpp"
 #include "scene_obj.hpp"
@@ -11,6 +12,8 @@ namespace p3d {
 		math::vec3 _b_color;
 		std::vector<light*> _lights;
 		std::vector<scene_obj*> _objs;
+        grid _grid;
+        bool _grid_on = false;
 
 	public:
 		scene();
@@ -20,7 +23,8 @@ namespace p3d {
 		math::vec3 b_color() const;
 		std::vector<light*> lights() const;
 		std::vector<scene_obj*> objs() const;
-        hit calculate_hit(const ray &) const;
+        hit calculate_hit(const ray &);
 		bool load_nff(const std::string);
+        void setup_grid();
 	};
 }
