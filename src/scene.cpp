@@ -3,6 +3,7 @@
 #include "plane.hpp"
 #include "sphere.hpp"
 #include "triangle.hpp"
+#include "area_light.hpp"
 
 #include <iostream>
 #include <iterator>
@@ -132,6 +133,28 @@ bool p3d::scene::load_nff(const std::string name) {
 				std::cout << "adding light to lights vector" << std::endl;
 				light *l = new p3d::light(pos, col);
 				_lights.push_back(l);
+			} else if (arr[0] == "al") { //area light location
+				std::cout << "creating area light" << std::endl;
+				// position
+				math::vec3 pos = math::vec3(std::atof(arr[1].c_str()),
+					std::atof(arr[2].c_str()),
+					std::atof(arr[3].c_str()));
+				// a
+				math::vec3 a = math::vec3(std::atof(arr[4].c_str()),
+					std::atof(arr[5].c_str()),
+					std::atof(arr[6].c_str()));			
+				// b
+				math::vec3 b = math::vec3(std::atof(arr[7].c_str()),
+					std::atof(arr[8].c_str()),
+					std::atof(arr[9].c_str()));
+				// color
+				math::vec3 color = math::vec3(std::atof(arr[10].c_str()),
+					std::atof(arr[11].c_str()),
+					std::atof(arr[12].c_str()));
+
+				std::cout << "adding area light to lights vector" << std::endl;
+				p3d::area_light *al = new p3d::area_light(pos, a, b, color);
+				_lights.push_back(al);
 			} else if (arr[0] == "f") { //object material properties
 				std::cout << "object material properties" << std::endl;
 				if (arr.size() == 9) {

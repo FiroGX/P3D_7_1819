@@ -18,6 +18,6 @@ namespace p3d {
     void vector_a(math::vec3);
     void vector_b(math::vec3);
 
-    math::vec3 pos();
+    math::vec3 pos(float, float);
 	};
 }

@@ -145,6 +145,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\area_light.cpp" />
     <ClCompile Include="src\b_box.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\grid.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\area_light.hpp" />
     <ClInclude Include="src\b_box.hpp" />
     <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\grid.hpp" />

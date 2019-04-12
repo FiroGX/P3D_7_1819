@@ -23,12 +23,10 @@ void p3d::area_light::vector_b(math::vec3 b) {
 }
 
 //random light point for soft shadow calculation
-math::vec3 p3d::area_light::pos() {
+math::vec3 p3d::area_light::pos(float a_epsilon, float b_epsilon) {
   //corner point
   math::vec3 c = p3d::light::pos();
-  //random epsilons for vectors a and b
-  float a_epsilon = static_cast<float> (std::rand()) / static_cast<float>(RAND_MAX);
-  float b_epsilon = static_cast<float> (std::rand()) / static_cast<float>(RAND_MAX);
+
   //random position calculation
   math::vec3 random_position = c + (a_epsilon * _vector_a) + (b_epsilon * _vector_b);
 
