@@ -1,6 +1,5 @@
 #include "grid.hpp"
 
-#include <iostream>
 #include <cmath>
 #include <limits>
 
@@ -114,18 +113,10 @@ p3d::hit p3d::grid::traverse(const ray &ray) {
     // calculate what is the initial cell of the ray intersection
     int ix, iy, iz;
     if (_b_box.inside(ray.o())) {
-        if (last != 0) {
-            std::cout << "inside" << std::endl;
-            last = 0;
-        }
         ix = math::clamp((ray.o().x() - _b_box.x0()) * _nx / (_b_box.x1() - _b_box.x0()), 0, _nx - 1);
         iy = math::clamp((ray.o().y() - _b_box.y0()) * _ny / (_b_box.y1() - _b_box.y0()), 0, _ny - 1);
         iz = math::clamp((ray.o().z() - _b_box.z0()) * _nz / (_b_box.z1() - _b_box.z0()), 0, _nz - 1);
     } else {
-        if (last != 1) {
-            std::cout << "outside" << std::endl;
-            last = 1;
-        }
         math::vec3 p = ray.o() + t0 * ray.d();
         ix = math::clamp((p.x() - _b_box.x0()) * _nx / (_b_box.x1() - _b_box.x0()), 0, _nx - 1);
         iy = math::clamp((p.y() - _b_box.y0()) * _ny / (_b_box.y1() - _b_box.y0()), 0, _ny - 1);
@@ -141,17 +132,48 @@ p3d::hit p3d::grid::traverse(const ray &ray) {
     int	ix_step, iy_step, iz_step;
     int ix_stop, iy_stop, iz_stop;
 
-    tx_next = t_min.x() + (ix + 1) * dtx;
-    ix_step = 1;
-    ix_stop = _nx;
-
-    ty_next = t_min.y() + (iy + 1) * dty;
-    iy_step = 1;
-    iy_stop = _ny;
-
-    tz_next = t_min.z() + (iz + 1) * dtz;
-    iz_step = 1;
-    iz_stop = _nz;
+    if (ray.d().x() > 0) {
+        tx_next = t_min.x() + (ix + 1) * dtx;
+        ix_step = 1;
+        ix_stop = _nx;
+    } else {
+        tx_next = t_min.x() + (_nx - ix) * dtx;
+        ix_step = -1;
+        ix_stop = -1;
+    }
+    if (ray.d().x() == 0) {
+        tx_next = std::numeric_limits<float>::max();
+        ix_step = -1;
+        ix_stop = -1;
+    }
+    if (ray.d().y() > 0) {
+        ty_next = t_min.y() + (iy + 1) * dty;
+        iy_step = 1;
+        iy_stop = _ny;
+    } else {
+        ty_next = t_min.y() + (_ny - iy) * dty;
+        iy_step = -1;
+        iy_stop = -1;
+    }
+    if (ray.d().y() == 0) {
+        ty_next = std::numeric_limits<float>::max();
+        iy_step = -1;
+        iy_stop = -1;
+    }
+    if (ray.d().z() > 0) {
+        tz_next = t_min.z() + (iz + 1) * dtz;
+        iz_step = 1;
+        iz_stop = _nz;
+    } else {
+        tz_next = t_min.z() + (_nz - iz) * dtz;
+        iz_step = -1;
+        iz_stop = -1;
+    }
+    if (ray.d().z() == 0) {
+        tz_next = std::numeric_limits<float>::max();
+        iz_step = -1;
+        iz_stop = -1;
+    }
 
     // grid traversal
     while (true) {
