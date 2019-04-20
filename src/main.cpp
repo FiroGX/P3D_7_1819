@@ -16,7 +16,7 @@
 
 #define MAX_DEPTH 3
 
-#define JITTERING false
+#define JITTERING true
 #define SAMPLE_SIZE 2
 #define GRID false
 
@@ -299,7 +299,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("scenes/balls_low.nff")))
+	if (!(sce.load_nff("scenes/pyramid_balls.nff")))
 		return 0;
 
 	if (GRID)
