@@ -22,7 +22,7 @@
 
 #define DOF true
 #define FOCAL_PLANE_DISTANCE 5;
-#define APERTURE 0.001	// lens radius
+#define APERTURE 0.01	// lens radius
 
 using namespace p3d;
 
@@ -209,8 +209,7 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 	float pixel_y = height * (y / resY - 0.5f); //y component on the pixel
 
 
-	//POINT P
-
+	//POINT P	// single point camera
 	math::vec3 df = sce.cam().eye() - sce.cam().at();
 
 	float focaldistance = df.magnitude(); //FOCAL_PLANE_DISTANCE; //REMEMBER TO CHANGE THIS TO FOCAL_PLANE_DISTANCE
@@ -329,7 +328,7 @@ math::vec3 jitterDof(int x, int y, int size) {		// its a bit redundant as we alr
 
 	//shuffling the light, lens and focal samples
 	std::shuffle(light_samples.begin(), light_samples.end(), std::default_random_engine());
-	std::shuffle(lens_samples.begin(), lens_samples.end(), std::default_random_engine());
+	//std::shuffle(lens_samples.begin(), lens_samples.end(), std::default_random_engine());
 	std::shuffle(focal_point_samples.begin(), focal_point_samples.end(), std::default_random_engine());
 
 	//calculation and tracing of the sample primary rays
