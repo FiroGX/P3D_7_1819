@@ -15,14 +15,12 @@
 #include "math/vec3.hpp"
 
 #define MAX_DEPTH 3
-
 #define JITTERING true
 #define SAMPLE_SIZE 16
-#define GRID false
-
-#define DOF true
-#define FOCAL_PLANE_DISTANCE 10;
-#define APERTURE 0.1	// lens radius
+#define GRID true
+#define DOF false
+#define FOCAL_PLANE_DISTANCE 3;
+#define APERTURE 0.05	// lens radius
 
 using namespace p3d;
 
@@ -201,7 +199,7 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 	math::vec3 color;
 	std::vector<std::pair<float, float>> light_samples(size*size);
 	std::vector<std::pair<float, float>> lens_samples(size*size);
-
+	
 	for (int i = 0; i < size*size; i++) {
 		//division of light sources in size*size
 		int p = i / size;
@@ -211,9 +209,7 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 		light_samples[i].first = (((float)std::rand() / (float)RAND_MAX) + p) / size;
 		light_samples[i].second = (((float)std::rand() / (float)RAND_MAX) + q) / size;
 	}
-
-	ray rayDirPixelFromEye = sce.cam().primaryRay(x, y); // para ficar com o raio até ao pixel
-
+	
 	float width = sce.cam().width(),
 		height = sce.cam().height(),
 		resX = sce.cam().resX(),
@@ -222,12 +218,12 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 	float pixel_x = width * (x / resX - 0.5f); //x component on the pixel
 	float pixel_y = height * (y / resY - 0.5f); //y component on the pixel
 
-
 	//POINT P
 	math::vec3 df = sce.cam().eye() - sce.cam().at();
 
-	float focaldistance = df.magnitude();// FOCAL_PLANE_DISTANCE; //REMEMBER TO CHANGE THIS TO FOCAL_PLANE_DISTANCE
+	float focaldistance = FOCAL_PLANE_DISTANCE; //REMEMBER TO CHANGE THIS TO FOCAL_PLANE_DISTANCE
 
+	//printf("%f\n",df.magnitude());
 	math::vec3 directionToP(-sce.cam().df() * sce.cam().ze()
 		+ pixel_x * sce.cam().xe()
 		+ pixel_y * sce.cam().ye());
@@ -259,10 +255,10 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 
 	//shuffling lens samples
 	std::shuffle(lens_samples.begin(), lens_samples.end(), std::default_random_engine());
-
+	
 	//shuffling the light samples
 	std::shuffle(light_samples.begin(), light_samples.end(), std::default_random_engine());
-
+	
 	//calculation and tracing of the sample primary rays
 	for (int i = 0; i < size*size; i++) {
 
@@ -285,8 +281,6 @@ math::vec3 jitterDof(int x, int y, int size) {		// its a bit redundant as we alr
 	std::vector<std::pair<float, float>> lens_samples(size*size);
 	std::vector<math::vec3> focal_point_samples(size*size);
 
-	ray rayDirPixelFromEye = sce.cam().primaryRay(x, y); // para ficar com o raio até ao pixel
-
 	float width = sce.cam().width(),
 		height = sce.cam().height(),
 		resX = sce.cam().resX(),
@@ -294,7 +288,7 @@ math::vec3 jitterDof(int x, int y, int size) {		// its a bit redundant as we alr
 
 	//focal_plane_points should have as many as size * size
 	math::vec3 df = sce.cam().eye() - sce.cam().at();
-	float focaldistance = df.magnitude(); // FOCAL_PLANE_DISTANCE;
+	float focaldistance =  FOCAL_PLANE_DISTANCE;
 
 
 	for (int i = 0; i < size*size; i++) {
@@ -394,7 +388,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("scenes/random_balls.nff")))
+	if (!(sce.load_nff("scenes/balls_low.nff")))
 		return 0;
 
 	if (GRID)
