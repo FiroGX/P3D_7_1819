@@ -29,6 +29,15 @@ p3d::ray p3d::camera::primaryRay(float x, float y) {
 	return ray(_eye,dir);
 }
 
+p3d::ray p3d::camera::castRay(float x, float y) { // STILL NOT COMPLETE this is suposed to return a ray from the lens to a point in the xy position of the viewplane
+	float pixel_x = _width * (x / _resX - 0.5f); //x component on the pixel
+	float pixel_y = _height * (y / _resY - 0.5f); //y component on the pixel
+
+	math::vec3 dir(-_df * _ze + pixel_x * _xe + pixel_y * _ye);
+
+	return ray(_eye, dir);
+}
+
 math::vec3 p3d::camera::eye() const {
 	return _eye;
 }

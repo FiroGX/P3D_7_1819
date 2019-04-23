@@ -20,9 +20,9 @@
 #define SAMPLE_SIZE 2
 #define GRID false
 
-#define DOF false
+#define DOF true
 #define FOCAL_PLANE_DISTANCE 5;
-#define APERTURE 0.1	// lens radius
+#define APERTURE 0.001	// lens radius
 
 using namespace p3d;
 
@@ -152,7 +152,7 @@ math::vec3 trace(const ray &ray, int depth, float ref_index, std::pair<float, fl
 				color += refr_color * hit.mat().t();
 			}
 		}
-
+		//printf("%f\n", hit.distance());
 		return color;
 	}
 }
@@ -267,6 +267,85 @@ math::vec3 dof(int x, int y, int size) { // with Antialising
 	return color / (size * size); //returns average color by # of samples
 }
 
+// TEST to both jitter and dof
+math::vec3 jitterDof(int x, int y, int size) {		// its a bit redundant as we already have jitter/aliasing and dof seperatly
+	math::vec3 color;
+	std::vector<std::pair<float, float>> pixel_samples(size*size);
+	std::vector<std::pair<float, float>> light_samples(size*size);
+	std::vector<std::pair<float, float>> lens_samples(size*size);
+	std::vector<math::vec3> focal_point_samples(size*size);
+
+	ray rayDirPixelFromEye = sce.cam().primaryRay(x, y); // para ficar com o raio até ao pixel
+
+	float width = sce.cam().width(),
+		height = sce.cam().height(),
+		resX = sce.cam().resX(),
+		resY = sce.cam().resY();
+
+	float pixel_x = width * (x / resX - 0.5f); //x component on the pixel
+	float pixel_y = height * (y / resY - 0.5f); //y component on the pixel
+
+
+	for (int i = 0; i < size*size; i++) {
+		//division of pixels (and light sources) in size*size
+		int p = i / size;
+		int q = i % size;
+
+		//defining random points in each pixel sub-division
+		pixel_samples[i].first = (((float)std::rand() / (float)RAND_MAX) + p) / size;
+		pixel_samples[i].second = (((float)std::rand() / (float)RAND_MAX) + q) / size;
+
+		//defining random points in each light source sub-division
+		light_samples[i].first = (((float)std::rand() / (float)RAND_MAX) + p) / size;
+		light_samples[i].second = (((float)std::rand() / (float)RAND_MAX) + q) / size;
+
+		//LENS - its not jittered yet
+		bool inCircle = false;
+		//defining random points in each lens sub-division
+		float randX;
+		float randY;
+		while (!inCircle) {
+			randX = (((float)std::rand() / (float)RAND_MAX) * 2) - 1;
+			randY = (((float)std::rand() / (float)RAND_MAX) * 2) - 1;
+			if (std::sqrtf(std::pow(randX, 2) + std::pow(randY, 2)) <= 1) {
+				inCircle = true;
+			}
+		}
+		lens_samples[i].first = randX * APERTURE;
+		lens_samples[i].second = randY * APERTURE;
+	}
+
+	//POINTs P should have as many as size * size
+	math::vec3 df = sce.cam().eye() - sce.cam().at();
+	float focaldistance = df.magnitude(); //FOCAL_PLANE_DISTANCE;
+
+	for (int i = 0; i < size*size; i++) {
+		math::vec3 directionToP(-sce.cam().df() * sce.cam().ze()
+			+ (pixel_x + pixel_samples[i].first)  * sce.cam().xe()
+			+ (pixel_y + pixel_samples[i].second) * sce.cam().ye());
+		float distanceToP = (focaldistance * directionToP.magnitude()) / sce.cam().df(); // distance from eye to point P
+		focal_point_samples[i]  = distanceToP * directionToP;
+	}
+
+	//shuffling the light, lens and focal samples
+	std::shuffle(light_samples.begin(), light_samples.end(), std::default_random_engine());
+	std::shuffle(lens_samples.begin(), lens_samples.end(), std::default_random_engine());
+	std::shuffle(focal_point_samples.begin(), focal_point_samples.end(), std::default_random_engine());
+
+	//calculation and tracing of the sample primary rays
+	for (int i = 0; i < size*size; i++) {
+
+		math::vec3 lensPoint = sce.cam().eye() +
+			(sce.cam().xe() * lens_samples[i].first) +
+			(sce.cam().ye() * lens_samples[i].second);
+
+		ray ray(lensPoint, focal_point_samples[i] - lensPoint);
+		color += trace(ray, 1, 1.0, light_samples[i]);
+	}
+
+	return color / (size * size); //returns average color by # of samples
+}
+
 // Draw function by primary ray casting from the eye towards the scene's objects
 void drawScene() {
 
@@ -274,15 +353,22 @@ void drawScene() {
 	for (int y = 0; y < RES_Y; y++) {
 		for (int x = 0; x < RES_X; x++) {
 			math::vec3 color;
-			if (JITTERING) {
-				color = jitter(x, y, SAMPLE_SIZE);
+			if (JITTERING && DOF) { //with jitter and dof
+				color = jitterDof(x, y, SAMPLE_SIZE);
 			}
 			else {
-				ray ray = sce.cam().primaryRay(x + 0.5f, y + 0.5f); //for each pixel, cast a primary ray
-				color = trace(ray, 1, 1.0, std::pair<float, float>(0.0f, 0.0f)); //depth=1, ior=1.0
-			}
-			if (DOF) {
-				color = dof(x, y, SAMPLE_SIZE);
+				if (JITTERING) {	//with only jitter
+					color = jitter(x, y, SAMPLE_SIZE);
+				}
+				else {
+					if (DOF) {	//with only dof
+						color = dof(x, y, SAMPLE_SIZE);
+					}
+					else {	// base case without jitter or dof
+						ray ray = sce.cam().primaryRay(x + 0.5f, y + 0.5f); //for each pixel, cast a primary ray
+						color = trace(ray, 1, 1.0, std::pair<float, float>(0.0f, 0.0f)); //depth=1, ior=1.0
+					}
+				}
 			}
 
 			glBegin(GL_POINTS);
