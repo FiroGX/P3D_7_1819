@@ -26,3 +26,9 @@ p3d::hit p3d::plane::calculate_intersection(const ray &ray) const {
 p3d::b_box p3d::plane::box() const {
     return b_box();
 }
+
+std::string p3d::plane::dump() const {
+    std::ostringstream buff;
+    buff << "[Plane - point: " << _point.dump() << ", normal: " << _normal.dump() << "]";
+    return buff.str();
+}

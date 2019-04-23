@@ -81,3 +81,9 @@ float math::vec3::magnitude_sqrd() const {
 float math::vec3::magnitude() const {
 	return std::sqrt(magnitude_sqrd());
 }
+
+std::string math::vec3::dump() const {
+    std::ostringstream buff;
+    buff << "[Vector - x: " << _x << ", y: " << _y << ", z: " << _z << "]";
+    return buff.str();
+}

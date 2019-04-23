@@ -19,5 +19,6 @@ namespace p3d {
 
 		virtual hit calculate_intersection(const ray &) const;
         virtual b_box box() const;
+        virtual std::string dump() const;
 	};
 }

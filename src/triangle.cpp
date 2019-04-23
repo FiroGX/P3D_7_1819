@@ -52,3 +52,9 @@ p3d::b_box p3d::triangle::box() const {
         std::min(std::min(_a.y(), _b.y()), _c.y()) - math::KEPSILON, std::max(std::max(_a.y(), _b.y()), _c.y()) + math::KEPSILON,
         std::min(std::min(_a.z(), _b.z()), _c.z()) - math::KEPSILON, std::max(std::max(_a.z(), _b.z()), _c.z()) + math::KEPSILON);
 }
+
+std::string p3d::triangle::dump() const {
+    std::ostringstream buff;
+    buff << "[Triangle - a: " << _a.dump() << ", b: " << _b.dump() << ", c: " << _c.dump() << "]";
+    return buff.str();
+}
