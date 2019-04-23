@@ -52,20 +52,20 @@ p3d::hit p3d::b_box::collision(const ray &ray) {
 
     float b = 1.0f / ray.d().y();
     if (b >= 0) {
-        ty_min = (_y0 - ray.o().y()) * a;
-        ty_max = (_y1 - ray.o().y()) * a;
+        ty_min = (_y0 - ray.o().y()) * b;
+        ty_max = (_y1 - ray.o().y()) * b;
     } else {
-        ty_min = (_y1 - ray.o().y()) * a;
-        ty_max = (_y0 - ray.o().y()) * a;
+        ty_min = (_y1 - ray.o().y()) * b;
+        ty_max = (_y0 - ray.o().y()) * b;
     }
 
     float c = 1.0f / ray.d().z();
     if (c >= 0) {
-        tz_min = (_z0 - ray.o().z()) * a;
-        tz_max = (_z1 - ray.o().z()) * a;
+        tz_min = (_z0 - ray.o().z()) * c;
+        tz_max = (_z1 - ray.o().z()) * c;
     } else {
-        tz_min = (_z1 - ray.o().z()) * a;
-        tz_max = (_z0 - ray.o().z()) * a;
+        tz_min = (_z1 - ray.o().z()) * c;
+        tz_max = (_z0 - ray.o().z()) * c;
     }
 
     float t0, t1;
@@ -92,7 +92,7 @@ p3d::hit p3d::b_box::collision(const ray &ray) {
 }
 
 bool p3d::b_box::inside(math::vec3 p) {
-    return _x0 <= p.x() && p.x() >= _x1 &&
-        _y0 <= p.y() && p.y() >= _y1 &&
-        _z0 <= p.z() && p.z() >= _z1;
+    return _x0 <= p.x() && p.x() <= _x1 &&
+        _y0 <= p.y() && p.y() <= _y1 &&
+        _z0 <= p.z() && p.z() <= _z1;
 }

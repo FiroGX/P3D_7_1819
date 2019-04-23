@@ -178,12 +178,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="jap.nff" />
+    <None Include="scenes\aligned_balls.nff" />
     <None Include="scenes\balls_high.nff" />
     <None Include="scenes\balls_low.nff" />
     <None Include="scenes\balls_medium.nff" />
     <None Include="scenes\mount_high.nff" />
     <None Include="scenes\mount_low.nff" />
     <None Include="scenes\mount_very_high.nff" />
+    <None Include="scenes\pyramid_balls.nff" />
+    <None Include="scenes\random_balls.nff" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

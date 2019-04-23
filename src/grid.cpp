@@ -6,8 +6,8 @@
 
 math::vec3 p3d::grid::min_coordinates(const std::vector<scene_obj *> &objs) {
   float min_x = std::numeric_limits<float>::max();
-  float min_y = min_x;
-  float min_z = min_x;
+  float min_y = std::numeric_limits<float>::max();
+  float min_z = std::numeric_limits<float>::max();
 
   for (scene_obj *obj : objs) {
     b_box box = obj->box();
@@ -27,8 +27,8 @@ math::vec3 p3d::grid::min_coordinates(const std::vector<scene_obj *> &objs) {
 
 math::vec3 p3d::grid::max_coordinates(const std::vector<scene_obj *> &objs) {
   float max_x = std::numeric_limits<float>::min();
-  float max_y = max_x;
-  float max_z = max_x;
+  float max_y = std::numeric_limits<float>::min();
+  float max_z = std::numeric_limits<float>::min();
 
   for (scene_obj *obj : objs) {
     b_box box = obj->box();
@@ -47,6 +47,7 @@ math::vec3 p3d::grid::max_coordinates(const std::vector<scene_obj *> &objs) {
 }
 
 void p3d::grid::setup_cells(const std::vector<scene_obj *> &objs) {
+
   // find the minimum and maximum coordinates of the grid
   math::vec3 p0 = min_coordinates(objs);
   math::vec3 p1 = max_coordinates(objs);
@@ -66,32 +67,30 @@ void p3d::grid::setup_cells(const std::vector<scene_obj *> &objs) {
   _ny = mult * wy / s + 1;
   _nz = mult * wz / s + 1;
   int num_cells = _nx * _ny * _nz;
+  std::cout << "num cells: " << num_cells << std::endl;
 
   // initialize the cells
   _cells = std::vector<std::vector<scene_obj *>>(num_cells, std::vector<scene_obj *>());
 
   for (scene_obj *obj : objs) {
     b_box obj_box = obj->box();
-    int ixmin = math::clamp((obj_box.x0() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
-    int iymin = math::clamp((obj_box.y0() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
-    int izmin = math::clamp((obj_box.z0() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
-    int ixmax = math::clamp((obj_box.x1() - p0.x()) * _nx / (p1.x() - p0.x()), 0, _nx - 1);
-    int iymax = math::clamp((obj_box.y1() - p0.y()) * _ny / (p1.y() - p0.y()), 0, _ny - 1);
-    int izmax = math::clamp((obj_box.z1() - p0.z()) * _nz / (p1.z() - p0.z()), 0, _nz - 1);
+    int ixmin = math::clamp((obj_box.x0() - p0.x()) * _nx / wx, 0, _nx - 1);
+    int iymin = math::clamp((obj_box.y0() - p0.y()) * _ny / wy, 0, _ny - 1);
+    int izmin = math::clamp((obj_box.z0() - p0.z()) * _nz / wz, 0, _nz - 1);
+    int ixmax = math::clamp((obj_box.x1() - p0.x()) * _nx / wx, 0, _nx - 1);
+    int iymax = math::clamp((obj_box.y1() - p0.y()) * _ny / wy, 0, _ny - 1);
+    int izmax = math::clamp((obj_box.z1() - p0.z()) * _nz / wz, 0, _nz - 1);
 
     // add objects to the cells
-    for (int iz = izmin; iz < izmax; iz++) {
-      for (int iy = iymin; iy < iymax; iy++) {
-        for (int ix = ixmin; ix < ixmax; ix++) {
+    for (int iz = izmin; iz <= izmax; iz++) {
+      for (int iy = iymin; iy <= iymax; iy++) {
+        for (int ix = ixmin; ix <= ixmax; ix++) {
           int index = ix + _nx * iy + _nx * _ny * iz;
           _cells[index].push_back(obj);
         }
       }
     }
   }
-
-  for (auto cell : _cells)
-    std::cout << cell.size() << std::endl;
 }
 
 p3d::hit p3d::grid::calculate_hit(const std::vector<scene_obj*> &objs, const ray &ray) {
@@ -108,7 +107,6 @@ p3d::hit p3d::grid::traverse(const ray &ray) {
   // if the ray doesn't intersect the grid, ignore
   hit col = _b_box.collision(ray);
   if (!col.collided()) {
-    std::cout << "noooooo" << std::endl;
     return col;
   }
 

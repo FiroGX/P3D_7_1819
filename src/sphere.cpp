@@ -45,3 +45,9 @@ p3d::b_box p3d::sphere::box() const {
     return b_box(_center.x() - _radius, _center.y() - _radius, _center.z() - _radius,
         _center.x() + _radius, _center.y() + _radius, _center.z() + _radius);
 }
+
+std::string p3d::sphere::dump() const {
+    std::ostringstream buff;
+    buff << "[Sphere - center: " << _center.dump() << ", radius: " << _radius << "]";
+    return buff.str();
+}

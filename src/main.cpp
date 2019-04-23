@@ -299,7 +299,7 @@ void drawScene() {
 
 int main(int argc, char**argv) {
 
-	if (!(sce.load_nff("scenes/pyramid_balls.nff")))
+	if (!(sce.load_nff("scenes/balls_low.nff")))
 		return 0;
 
 	if (GRID)

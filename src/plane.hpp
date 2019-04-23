@@ -1,6 +1,8 @@
 #pragma once
 
 #include "scene_obj.hpp"
+#include <string>
+#include <sstream>
 
 namespace p3d {
 	class plane : public scene_obj {
@@ -15,5 +17,6 @@ namespace p3d {
 		math::vec3 normal();
 		virtual hit calculate_intersection(const ray &) const;
         virtual b_box box() const;
+        virtual std::string dump() const;
 	};
 }

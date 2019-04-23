@@ -124,5 +124,14 @@
     <None Include="scenes\mount_very_high.nff">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="scenes\aligned_balls.nff">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scenes\pyramid_balls.nff">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scenes\random_balls.nff">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

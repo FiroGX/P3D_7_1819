@@ -3,6 +3,8 @@
 #include "b_box.hpp"
 #include "hit.hpp"
 #include "ray.hpp"
+#include <iostream>
+#include <string>
 
 namespace p3d {
 	class scene_obj {
@@ -15,5 +17,6 @@ namespace p3d {
 
 		virtual hit calculate_intersection(const ray &) const = 0;
         virtual b_box box() const = 0;
+        virtual std::string dump() const = 0;
 	};
 }

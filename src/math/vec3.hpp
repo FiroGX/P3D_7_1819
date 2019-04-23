@@ -2,6 +2,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <algorithm>
+#include <sstream>
+#include <string>
 
 namespace math {
 	constexpr auto KEPSILON = 0.001f;
@@ -44,6 +46,9 @@ namespace math {
 		// Magnitude
 		float magnitude_sqrd() const;
 		float magnitude() const;
+
+        // Dump info
+        std::string dump() const;
 	};
 
 	// Reversed scalar multiplication
@@ -74,6 +79,6 @@ namespace math {
 	}
 
     inline float clamp(float n, float lower, float upper) {
-        return std::max(lower, std::min(n, upper));
+        return (n < lower ? lower : (n > upper ? upper : n));
     }
 }
